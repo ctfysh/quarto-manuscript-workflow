@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: biogeosciences.csl
+    reference-doc: template.docx
+  pdf:
+    csl: biogeosciences.csl
+    cite-method: citeproc
