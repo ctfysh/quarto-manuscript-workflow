@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: elsevier-vancouver.csl
+    reference-doc: template.docx
+  pdf:
+    csl: elsevier-vancouver.csl
+    cite-method: citeproc
