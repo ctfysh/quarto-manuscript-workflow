@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: water-research.csl
+    reference-doc: template.docx
+  pdf:
+    csl: water-research.csl
+    cite-method: citeproc
