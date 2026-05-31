@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: ecology.csl
+    reference-doc: template.docx
+  pdf:
+    csl: ecology.csl
+    cite-method: citeproc
