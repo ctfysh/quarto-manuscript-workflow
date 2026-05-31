@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: apa.csl
+    reference-doc: template.docx
+  pdf:
+    csl: apa.csl
+    cite-method: citeproc
