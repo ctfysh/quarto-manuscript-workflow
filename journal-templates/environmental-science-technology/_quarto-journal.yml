@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: environmental-science-and-technology.csl
+    reference-doc: template.docx
+  pdf:
+    csl: environmental-science-and-technology.csl
+    cite-method: natbib
