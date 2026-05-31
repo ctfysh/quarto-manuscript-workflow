@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: wiley.csl
+    reference-doc: template.docx
+  pdf:
+    csl: wiley.csl
+    cite-method: citeproc
