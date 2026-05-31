@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: mla.csl
+    reference-doc: template.docx
+  pdf:
+    csl: mla.csl
+    cite-method: citeproc
