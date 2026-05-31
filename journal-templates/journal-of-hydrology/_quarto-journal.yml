@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: journal-of-hydrology.csl
+    reference-doc: template.docx
+  pdf:
+    csl: journal-of-hydrology.csl
+    cite-method: citeproc
