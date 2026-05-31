@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: geophysical-research-letters.csl
+    reference-doc: template.docx
+  pdf:
+    csl: geophysical-research-letters.csl
+    cite-method: citeproc
