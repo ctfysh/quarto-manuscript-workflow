@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: journal-of-cleaner-production.csl
+    reference-doc: template.docx
+  pdf:
+    csl: journal-of-cleaner-production.csl
+    cite-method: citeproc
