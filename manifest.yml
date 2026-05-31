@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://agentskills.io/schema/manifest.json
+name: quarto-manuscript-workflow
+display-name: Quarto Manuscript Workflow
+description: "Standardized academic manuscript production with Quarto"
+version: 1.0.0
+author: community
+categories:
+  - academic-writing
+  - quarto
+  - publishing
