@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: ieee.csl
+    reference-doc: template.docx
+  pdf:
+    csl: ieee.csl
+    cite-method: citeproc
