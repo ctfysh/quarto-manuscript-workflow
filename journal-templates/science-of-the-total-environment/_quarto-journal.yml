@@ -1,0 +1,7 @@
+format:
+  docx:
+    csl: science-of-the-total-environment.csl
+    reference-doc: template.docx
+  pdf:
+    csl: science-of-the-total-environment.csl
+    cite-method: citeproc
