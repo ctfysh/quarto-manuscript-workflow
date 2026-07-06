@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: journal-of-environmental-management.csl
-    reference-doc: template.docx
-  pdf:
-    csl: journal-of-environmental-management.csl
-    cite-method: citeproc

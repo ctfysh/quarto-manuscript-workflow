@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: chicago.csl
-    reference-doc: template.docx
-  pdf:
-    csl: chicago.csl
-    cite-method: citeproc

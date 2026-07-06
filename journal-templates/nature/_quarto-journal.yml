@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: nature.csl
-    reference-doc: template.docx
-  pdf:
-    csl: nature.csl
-    cite-method: citeproc

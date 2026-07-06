@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: springer.csl
-    reference-doc: template.docx
-  pdf:
-    csl: springer.csl
-    cite-method: citeproc

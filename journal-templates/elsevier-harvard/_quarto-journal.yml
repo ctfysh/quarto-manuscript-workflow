@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: elsevier-harvard.csl
-    reference-doc: template.docx
-  pdf:
-    csl: elsevier-harvard.csl
-    cite-method: citeproc

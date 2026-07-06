@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: limnology-and-oceanography.csl
-    reference-doc: template.docx
-  pdf:
-    csl: limnology-and-oceanography.csl
-    cite-method: citeproc

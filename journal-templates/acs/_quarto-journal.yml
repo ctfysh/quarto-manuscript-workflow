@@ -1,9 +1,0 @@
-format:
-  docx:
-    csl: american-chemical-society.csl
-    reference-doc: template.docx
-  pdf:
-    csl: american-chemical-society.csl
-    cite-method: natbib
-  html:
-    csl: american-chemical-society.csl

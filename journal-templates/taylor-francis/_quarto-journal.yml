@@ -1,7 +1,0 @@
-format:
-  docx:
-    csl: taylor-francis.csl
-    reference-doc: template.docx
-  pdf:
-    csl: taylor-francis.csl
-    cite-method: citeproc
