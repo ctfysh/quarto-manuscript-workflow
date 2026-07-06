@@ -1,4 +1,4 @@
-# Scenario D: Complete Manuscript — Just Format It
+# Scenario D: Complete Manuscript, Just Format It
 
 **Researcher:** *"Here's my final draft. Please format it for submission to Water Research and send me the .docx."*
 
@@ -8,7 +8,7 @@ Researcher provides: `final-draft.md` (a complete Markdown manuscript)
 
 ## Step 1: Read and Validate
 
-Agent reads the Markdown file — all sections are present, no TODOs, no gaps:
+Agent reads the Markdown file. All sections are present, with no TODOs or gaps:
 
 ```
 ✅ Title: "Occurrence and Removal of Microplastics in Drinking Water Treatment Plants"
@@ -26,7 +26,7 @@ Agent reads the Markdown file — all sections are present, no TODOs, no gaps:
 
 **Agent:** *"Your manuscript looks complete. I'll apply the Water Research template and render it."*
 
-No interview, no TODO blocks, no gap analysis. Skip straight to template.
+The manuscript is complete, so the agent skips the interview and gap analysis and applies the template directly.
 
 ---
 
@@ -44,11 +44,13 @@ format:
   docx:
     reference-doc: template.docx
     csl: water-research.csl
-    filters:
-      - abstract.lua
+  pdf:                       # also configures PDF output
+    csl: water-research.csl
 execute:
   freeze: true               # final render — freeze
 bibliography: references.bib
+filters:
+  - abstract.lua
 ```
 
 No `authors-block` extension needed if the manuscript already has proper author formatting.
@@ -93,4 +95,4 @@ Switching journals later is one command:
 3. Runs pre-flight check
 4. Re-renders
 
-New delivery in under a minute.
+The new delivery is produced in under a minute.

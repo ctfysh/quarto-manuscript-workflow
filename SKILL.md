@@ -7,18 +7,18 @@ description: "Use when a researcher needs to produce a formatted academic manusc
 
 ## Overview
 
-This skill guides the AI agent as a **translation layer** between the researcher and Quarto. The researcher provides materials; the agent assembles them into a proper Quarto manuscript project, applies journal templates, iterates on revisions, and delivers a formatted .docx. The researcher **never** writes .qmd syntax or runs commands.
+This skill sits between the researcher and Quarto. The researcher provides materials; the agent assembles them into a Quarto manuscript project, applies journal templates, revises, and delivers a formatted .docx. The researcher never writes .qmd syntax or runs commands.
 
 ## Core Concepts (for the AI agent)
 
-- **Quarto manuscript project:** `quarto create project --type manuscript` — single source (`index.qmd`) produces DOCX/PDF/HTML
+- **Quarto manuscript project:** `quarto create project --type manuscript`. Single source (`index.qmd`) produces DOCX/PDF/HTML.
 - **.qmd structure:** Markdown + YAML frontmatter (`---`) + cross-references (`@fig-`, `@sec-`, etc.)
-- **Journal template library:** `assets/template.docx` + 22 `*.csl` files in `journal-templates/`. The agent dynamically generates `_quarto-journal.yml` per session — no per-journal config files on disk.
+- **Journal template library:** `assets/template.docx` + 22 `*.csl` files in `journal-templates/`. The agent dynamically generates `_quarto-journal.yml` per session. No per-journal config files on disk.
 - **Output pipeline:** `.qmd` → `quarto render` → `_manuscript/index.docx`
 
 ## Prerequisites
 
-- **Quarto ≥1.3** — `quarto --version`
+- **Quarto ≥1.3**. Run `quarto --version`.
 - **LaTeX** for PDF output (`quarto install tinytex`)
 
 ## Workflow (adaptive)
@@ -37,12 +37,12 @@ No detail questions. Title + journal only, everything else as TODO.
 
 ### Scenario B: Fragments (notes, PPT slides, emails, chat messages)
 
-Agent strategy — puzzle assembly:
+Agent strategy: puzzle assembly.
 
 1. **Classify** each fragment → Introduction / Methods / Results / Discussion / Unknown
 2. **Infer** IMRaD placement from context, mark uncertain with `<!-- FUZZY -->`
 3. **Assemble** into .qmd in IMRaD order
-4. **Coverage report**: ✅ Intro ✅ Methods ❌ Results ⚠️ Discussion ❌ Abstract — present all gaps at once, batch questions
+4. **Coverage report**: ✅ Intro ✅ Methods ❌ Results ⚠️ Discussion ❌ Abstract. Present all gaps at once, batch questions.
 
 ### Scenario C: Word draft / Markdown files
 
@@ -83,8 +83,8 @@ Content untouched, format QA only.
 
 ### Core rules
 
-- **Always renderable** — Never wait. Every gap → TODO block.
-- **Batch questions** — One structured gap report, not individual Q&A.
+- **Always renderable**. Never wait. Every gap → TODO block.
+- **Batch questions**. One structured gap report, not individual Q&A.
 - **Three-color severity:**
 
 | Severity | Examples | Agent Behavior |
@@ -101,14 +101,14 @@ After assembling or parsing user content and before template application, normal
 2. **Translate** any block that does not match the target language to the target language (e.g., Chinese notes → English for an English-language journal)
 3. **Preserve** as-is: technical terms, citation keys (`[@key]`), DOIs, URLs, code, equations, LaTeX math, reference labels (`@fig-`, `@sec-`)
 4. **Keep** `<!-- TODO -->` and `<!-- FUZZY -->` markers in English regardless of target language
-5. **Mark uncertain** translations with `<!-- LANG-CHECK: original text -->` — do not silently guess
+5. **Mark uncertain** translations with `<!-- LANG-CHECK: original text -->`. Do not silently guess.
 6. **Figure captions and table headers**: always normalize to target language
 
 Applies to Scenario B (fragments → assembly), Scenario C (Word/Markdown → .qmd), and Scenario D (complete manuscript with mixed-language content). Scenario A (ideas only) and E (existing project) produce content in the target language from the start.
 
 ## Template Application
 
-Researcher only says which journal — agent handles everything:
+Researcher only says which journal. Agent handles everything:
 
 1. **Look up** the journal → identify CSL file, `cite-method`, and target language
 2. **Note language**: all current journals are English (`lang: en`); if adding a non-English journal the language must be set explicitly
@@ -116,31 +116,31 @@ Researcher only says which journal — agent handles everything:
 4. **If CSL not bundled**: download from [CSL style repository](https://github.com/citation-style-language/styles) or [Zotero style search](https://www.zotero.org/styles)
 5. **Generate config** depending on context:
 
-   **New project** — write complete `_quarto.yml` and install extensions:
-   ```yaml
-   project:
-     type: manuscript
-   manuscript:
-     article: index.qmd
-   lang: en
-   format:
-     docx:
-       reference-doc: template.docx
-       csl: <journal>.csl
-       filters:
-         - abstract.lua
-         - authors-block
-     pdf:
-       csl: <journal>.csl
-       cite-method: citeproc       # or natbib
-   execute:
-     freeze: false                 # toggle to true for final render
-   bibliography: references.bib
-   ```
+   **New project**. Write complete `_quarto.yml` and install extensions:
+    ```yaml
+    project:
+      type: manuscript
+    manuscript:
+      article: index.qmd
+    lang: en
+    format:
+      docx:
+        reference-doc: template.docx
+        csl: <journal>.csl
+      pdf:
+        csl: <journal>.csl
+        cite-method: citeproc       # or natbib
+    execute:
+      freeze: false                 # toggle to true for final render
+    bibliography: references.bib
+    filters:
+      - abstract.lua
+      - authors-block
+    ```
    Then run `quarto add kapsner/authors-block` to install the third-party author affiliation extension.
    Create `figures/` directory (empty, for figures to be added).
 
-   **Switching journals** — write `_quarto-journal.yml` with only format overrides:
+   **Switching journals**. Write `_quarto-journal.yml` with only format overrides:
    ```yaml
    format:
      docx:
@@ -158,7 +158,7 @@ Researcher only says which journal — agent handles everything:
    - ✅ `lang:` matches journal language (all current journals → `en`)
    - ✅ `cite-method` matches journal (default `citeproc`; ACS/ES&T → `natbib`)
    - ✅ CSL + reference-doc are from the same journal
-   - ✅ Manuscript body language matches `lang:` — auto-fix detected mismatches, mark uncertain segments with `<!-- LANG-CHECK -->`
+   - ✅ Manuscript body language matches `lang:`. Auto-fix detected mismatches, mark uncertain segments with `<!-- LANG-CHECK -->`
 
 ### Customization entry points
 
@@ -201,4 +201,4 @@ All 22 CSL files in `journal-templates/` use `cite-method: citeproc` and target 
 | Field | Exception |
 |-------|-----------|
 | `cite-method: natbib` | ACS, ES&T |
-| Non-English `lang:` | (none yet — set explicitly when adding a non-English journal) |
+| Non-English `lang:` | (none yet. Set explicitly when adding a non-English journal) |

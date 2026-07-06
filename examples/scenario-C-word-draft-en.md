@@ -1,4 +1,4 @@
-# Scenario C: Word Draft — From .docx to Journal-Ready .qmd
+# Scenario C: Word Draft, From .docx to Journal-Ready .qmd
 
 **Researcher:** *"Here's my manuscript draft in Word. I need it formatted for Environmental Science & Technology."*
 
@@ -62,7 +62,7 @@ Citations are converted to `[@smith2020]`, `[@zhang2021]`, etc.
 
 ## Step 4: Build .qmd
 
-Agent generates the full `index.qmd`:
+Agent generates the full `index.qmd` (format configuration goes in `_quarto.yml`):
 
 ```markdown
 ---
@@ -72,12 +72,7 @@ author:
     affiliation: Nanjing University
 abstract: |
   <!-- TODO: extract or write abstract -->
-format:
-  docx:
-    reference-doc: template.docx
-    csl: environmental-science-and-technology.csl
 bibliography: references.bib
-lang: en
 ---
 
 ## Introduction {#sec-intro}
@@ -139,11 +134,32 @@ Agent flags what's missing:
 
 ## Step 6: Apply ES&T Template + Render
 
+Agent generates `_quarto.yml`:
+
+```yaml
+project:
+  type: manuscript
+manuscript:
+  article: index.qmd
+lang: en
+format:
+  docx:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+  pdf:
+    csl: environmental-science-and-technology.csl
+    cite-method: natbib               # ES&T exception
+execute:
+  freeze: false
+bibliography: references.bib
+filters:
+  - abstract.lua
+  - authors-block
 ```
-✅ _quarto.yml generated with ES&T config
-✅ cite-method: natbib (ES&T exception)
-✅ abstract.lua filter configured
-✅ authors-block extension installed
+
+Then runs `quarto add kapsner/authors-block` to install the extension, creating `_extensions/kapsner/authors-block/`.
+
+```
 ✅ figures/ directory exists with 5 extracted images
 ✅ references.bib with 3 entries (1 TODO for Wang 2022)
 ```

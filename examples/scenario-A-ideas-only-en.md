@@ -1,4 +1,4 @@
-# Scenario A: Ideas Only — From Topic to Scaffold
+# Scenario A: Ideas Only, From Topic to Scaffold
 
 **Researcher:** *"I want to write a review on microplastics in aquatic ecosystems for Nature."*
 
@@ -8,8 +8,8 @@
 
 **Agent:** "Sure. Two questions:
 
-1. **Title?** — A working title is fine, it can change later.
-2. **Sections?** — Standard IMRaD, or do you have a specific outline in mind?"
+1. **Title?** A working title is fine, it can change later.
+2. **Sections?** Standard IMRaD, or do you have a specific outline in mind?"
 
 **Researcher:** *"Title: 'Microplastic Pollution in Freshwater Ecosystems: Sources, Fate, and Ecological Impacts'. Standard IMRaD is fine."*
 
@@ -17,7 +17,7 @@
 
 ## Step 2: Scaffold Project
 
-Agent creates the project directory with full structure:
+Agent creates the project directory with initial structure:
 
 ```
 microplastics-review/
@@ -30,6 +30,8 @@ microplastics-review/
 ├── abstract.lua             # copied from skill assets
 └── .gitignore               # _manuscript/, _freeze/
 ```
+
+After Step 3, the directory also contains `_extensions/kapsner/authors-block/` (created by `quarto add`).
 
 `index.qmd` is assembled with TODO blocks for every missing section:
 
@@ -107,12 +109,12 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
-    filters:
-      - abstract.lua
-      - authors-block
 execute:
   freeze: false
 bibliography: references.bib
+filters:
+  - abstract.lua
+  - authors-block
 ```
 
 Then runs `quarto add kapsner/authors-block` to install extension.

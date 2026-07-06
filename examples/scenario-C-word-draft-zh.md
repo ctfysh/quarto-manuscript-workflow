@@ -62,7 +62,7 @@ Agent 扫描正文中的行内引用：
 
 ## 第 4 步：生成 .qmd
 
-Agent 生成完整的 `index.qmd`：
+Agent 生成完整的 `index.qmd`（格式配置放在 `_quarto.yml` 中）：
 
 ```markdown
 ---
@@ -73,7 +73,6 @@ author:
 abstract: |
   <!-- TODO: 提取或撰写摘要 -->
 bibliography: references.bib
-lang: en
 ---
 
 ## 引言 {#sec-intro}
@@ -129,11 +128,32 @@ lang: en
 
 ## 第 6 步：套用 ES&T 模板 + 渲染
 
+Agent 生成 `_quarto.yml`：
+
+```yaml
+project:
+  type: manuscript
+manuscript:
+  article: index.qmd
+lang: en
+format:
+  docx:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+  pdf:
+    csl: environmental-science-and-technology.csl
+    cite-method: natbib               # ES&T 例外
+execute:
+  freeze: false
+bibliography: references.bib
+filters:
+  - abstract.lua
+  - authors-block
 ```
-✅ _quarto.yml 已生成，ES&T 配置
-✅ cite-method: natbib（ES&T 例外）
-✅ abstract.lua 过滤器已配置
-✅ authors-block 扩展已安装
+
+然后运行 `quarto add kapsner/authors-block` 安装扩展，生成 `_extensions/kapsner/authors-block/`。
+
+```
 ✅ figures/ 目录已创建，内含 5 张提取图片
 ✅ references.bib 含 3 条有效条目（1 条 TODO）
 ```

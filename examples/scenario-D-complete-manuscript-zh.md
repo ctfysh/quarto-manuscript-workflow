@@ -44,11 +44,13 @@ format:
   docx:
     reference-doc: template.docx
     csl: water-research.csl
-    filters:
-      - abstract.lua
+  pdf:                       # 同时配置 PDF 输出
+    csl: water-research.csl
 execute:
   freeze: true               # 定稿渲染 — freeze
 bibliography: references.bib
+filters:
+  - abstract.lua
 ```
 
 稿件已有作者格式，无需 `authors-block` 扩展。

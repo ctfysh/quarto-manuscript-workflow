@@ -28,7 +28,7 @@ Agent 读取每段碎片并标记 IMRaD 归属：
 
 ## 第 2 步：拼装为 .qmd
 
-Agent 按 IMRaD 顺序组装，不确定的碎片保留标记：
+Agent 按 IMRaD 顺序组装，对不确定的碎片保留标记：
 
 ```markdown
 ## 引言 {#sec-intro}

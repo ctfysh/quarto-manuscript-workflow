@@ -1,4 +1,4 @@
-# Scenario B: Fragments — From Scattered Notes to Structured Draft
+# Scenario B: Fragments, From Scattered Notes to Structured Draft
 
 **Researcher:** *"I have meeting notes, some slides, and email discussions about my lake sediment microplastics study. Can you make a manuscript out of this?"*
 
@@ -80,7 +80,7 @@ All fragments are in English → no translation needed. But if fragments were in
 ## Step 4: Coverage Report
 
 ```
-📋 Coverage Report — Lake Sediment Microplastics Manuscript
+📋 Coverage Report: Lake Sediment Microplastics Manuscript
 
   Section        | Status | Source
   ---------------|--------|-------------------
@@ -97,7 +97,7 @@ All fragments are in English → no translation needed. But if fragments were in
 
 Agent presents all gaps at once (batch questions, not one-at-a-time):
 
-*"I've assembled the manuscript from your materials. Three sections are missing entirely (Abstract, Introduction, Conclusion). Two fragments are marked as `<!-- FUZZY -->` — could you clarify where they go? Also, do you have DOI links for your references?"*
+*"I've assembled the manuscript from your materials. Three sections are missing entirely (Abstract, Introduction, Conclusion). Two fragments are marked as `<!-- FUZZY -->`. Could you clarify where they go? Also, do you have DOI links for your references?"*
 
 ---
 

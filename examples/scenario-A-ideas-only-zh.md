@@ -17,7 +17,7 @@
 
 ## 第 2 步：搭建项目骨架
 
-Agent 创建完整项目结构：
+Agent 创建初始项目结构：
 
 ```
 microplastics-review/
@@ -31,7 +31,9 @@ microplastics-review/
 └── .gitignore               # _manuscript/, _freeze/
 ```
 
-`index.qmd` 所有缺失部分用 TODO 块标记：
+第 3 步安装 `authors-block` 扩展后，目录还会包含 `_extensions/kapsner/authors-block/`。
+
+`index.qmd` 中所有缺失部分用 TODO 块标记：
 
 ```markdown
 ---
@@ -103,12 +105,12 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
-    filters:
-      - abstract.lua
-      - authors-block
 execute:
   freeze: false
 bibliography: references.bib
+filters:
+  - abstract.lua
+  - authors-block
 ```
 
 然后运行 `quarto add kapsner/authors-block` 安装第三方扩展。

@@ -97,6 +97,7 @@ quarto render
 
 - *将缺失的 template.docx 和 nature.csl 复制到项目根目录*
 - *在 _quarto.yml 中添加了 abstract.lua 过滤器*
+- *在 _quarto.yml 中添加了 `lang: en`*
 - *搜索并补上了 Liu 2022 的 DOI 到 references.bib*
 
 *⚠️ 需要你手动处理的问题：*

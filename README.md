@@ -2,7 +2,7 @@
 
 [**English**](#english) | [**中文**](#中文)
 
-An AI-agent skill for academic manuscript production. Hand your materials to the agent — notes, Word draft, figures, or just an idea — and get back a journal-formatted `.docx`. No `.qmd` syntax to write, no Quarto commands to run. **Slash command: `/manuscript`**
+An AI-agent skill for academic manuscript production. Hand the agent your materials (notes, Word draft, figures, or just an idea) and get back a journal-formatted `.docx`. No `.qmd` syntax to write, no Quarto commands to run. **Slash command: `/manuscript`**
 
 ---
 
@@ -18,7 +18,7 @@ Activate the skill in three ways:
 | **Natural language** | "Help me format this paper for Nature" | The orchestrator detects manuscript intent and loads the skill automatically |
 | **Explicit skill call** | "Load the manuscript skill" | Triggers `skill(name="quarto-manuscript-workflow")` directly |
 
-Once activated, tell the agent your materials and target journal — everything else is automated.
+Once activated, tell the agent your materials and target journal. Everything else is automated.
 
 ### Examples by scenario
 
@@ -34,13 +34,13 @@ Once activated, tell the agent your materials and target journal — everything 
 
 | Problem | This skill |
 |---------|-----------|
-| You have fragments — meeting notes, PPT slides, chat messages, half a draft | Agent classifies each fragment, assembles into IMRaD, marks uncertain segments |
+| You have fragments (meeting notes, PPT slides, chat messages, half a draft) | Agent classifies each fragment, assembles into IMRaD, marks uncertain segments |
 | You only have an idea and a target journal | Agent does a 2-question interview (title + journal), scaffolds the full project with TODO blocks for what's missing |
 | You have a complete Word/Markdown draft | Agent parses styles, extracts figures and citations, builds `.qmd`, applies journal template |
 | You'll iterate on structure | Agent reorders sections, swaps figures, adds citations, re-renders on each request |
-| You don't know what's missing | Coverage report: ✅ Intro ✅ Methods ❌ Results — all gaps shown at once, not one-at-a-time |
+| You don't know what's missing | Coverage report: ✅ Intro ✅ Methods ❌ Results; all gaps shown at once, not one-at-a-time |
 
-The agent never blocks on missing material — it inserts `<!-- TODO: ... -->` blocks and keeps going. The project is always renderable.
+The agent never blocks on missing material. It inserts `<!-- TODO: ... -->` blocks and keeps going. The project is always renderable.
 
 ### Input → Output
 
@@ -60,7 +60,7 @@ Output is always a rendered `.docx` with:
 
 ### Adaptive workflow
 
-The agent picks the flow based on what you hand it — not a fixed pipeline:
+The agent picks the flow based on what you hand it, not a fixed pipeline:
 
 - **Ideas only** → 2 questions (title? journal?) → scaffold + TODOs → template → render
 - **Fragments** → classify → assemble → coverage report → template → render
@@ -75,7 +75,7 @@ The agent picks the flow based on what you hand it — not a fixed pipeline:
 - `lang` matches journal language (all current journals → `en`)
 - `cite-method` matches the journal
 - CSL and reference doc are from the same journal
-- Manuscript body language matches `lang` — auto-fixes mismatches, marks uncertain segments
+- Manuscript body language matches `lang`; auto-fixes mismatches, marks uncertain segments
 
 ---
 

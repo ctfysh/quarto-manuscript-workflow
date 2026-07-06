@@ -1,4 +1,4 @@
-# Scenario E: Existing Quarto Project — QA and Fix
+# Scenario E: Existing Quarto Project, QA and Fix
 
 **Researcher:** *"I've been writing in Quarto directly. Can you check if everything is set up correctly and render it?"*
 
@@ -27,6 +27,7 @@ bibliography: references.bib     # ✅ file exists
 **Issues found:**
 - `template.docx` and `nature.csl` are referenced but don't exist in the project directory → agent copies them from the skill's assets
 - No `filters:` section → agent adds `abstract.lua` filter
+- No `lang:` set → agent adds `lang: en`
 
 ---
 
@@ -45,7 +46,7 @@ References in document:
 ```
 
 **Issues found:**
-- `@eq-1` is broken — equation missing or label wrong
+- `@eq-1` is broken: equation missing or label wrong
 - `@liu2022` is missing from bibliography
 
 Agent fixes what it can (adds bib entry from DOI search) and reports what needs manual attention.
@@ -96,10 +97,11 @@ quarto render
 
 - *Added missing template.docx and nature.csl to project root*
 - *Added abstract.lua filter to _quarto.yml*
+- *Added `lang: en` to _quarto.yml*
 - *Found and added DOI for Liu 2022 to references.bib*
 
 *⚠️ Issues you need to fix:*
-- *`@eq-1` — equation label not found in document*
-- *`figures/raw-data.png` — exists but never referenced in text*
+- *`@eq-1`: equation label not found in document*
+- *`figures/raw-data.png`: exists but never referenced in text*
 
 *Here's your rendered .docx."*
