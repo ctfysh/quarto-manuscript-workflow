@@ -2,7 +2,7 @@
 
 [**English**](#english) | [**中文**](#中文)
 
-An AI-agent skill for academic manuscript production. Hand the agent your materials (notes, Word draft, figures, or just an idea) and get back a journal-formatted `.docx`. No `.qmd` syntax to write, no Quarto commands to run. **Slash command: `/manuscript`**
+An AI-agent skill for academic manuscript production. Hand the agent your materials (notes, Word draft, figures, or just an idea) and get back a journal-formatted `.docx`. No `.qmd` syntax to write, no Quarto commands to run. **Slash command: `/quarto-manuscript-workflow`**
 
 ---
 
@@ -14,7 +14,7 @@ Activate the skill in three ways:
 
 | Way | Example | How it works |
 |-----|---------|-------------|
-| **Slash command** | `/manuscript I want to submit this draft to ES&T` | Registered in `opencode.jsonc` → loads skill |
+| **Slash command** | `/quarto-manuscript-workflow I want to submit this draft to ES&T` | Symlinked in `~/.config/opencode/skills/` → loads skill automatically |
 | **Natural language** | "Help me format this paper for Nature" | The orchestrator detects manuscript intent and loads the skill automatically |
 | **Explicit skill call** | "Load the manuscript skill" | Triggers `skill(name="quarto-manuscript-workflow")` directly |
 
@@ -87,7 +87,7 @@ The agent picks the flow based on what you hand it, not a fixed pipeline:
 
 | 方式 | 示例 | 原理 |
 |------|------|------|
-| **斜杠命令** | `/manuscript 帮我把这篇稿子投 ES&T` | 注册在 `opencode.jsonc` 中 → 加载 skill |
+| **斜杠命令** | `/quarto-manuscript-workflow 帮我把这篇稿子投 ES&T` | symlink 到 `~/.config/opencode/skills/` → 自动加载 skill |
 | **自然语言** | "帮我整理稿件投 Nature" | 编排器检测到稿件意图，自动加载 skill |
 | **显式调用** | "加载 manuscript skill" | 直接触发 `skill(name="quarto-manuscript-workflow")` |
 
