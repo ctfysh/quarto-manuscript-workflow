@@ -24,11 +24,11 @@ Once activated, tell the agent your materials and target journal — everything 
 
 | Scenario | What you have | Example |
 |----------|--------------|---------|
-| A | Just an idea, nothing written | [`examples/scenario-A-ideas-only.md`](examples/scenario-A-ideas-only.md) |
-| B | Scattered notes, slides, emails | [`examples/scenario-B-fragments.md`](examples/scenario-B-fragments.md) |
-| C | A complete Word/Markdown draft | [`examples/scenario-C-word-draft.md`](examples/scenario-C-word-draft.md) |
-| D | Final manuscript, need formatting | [`examples/scenario-D-complete-manuscript.md`](examples/scenario-D-complete-manuscript.md) |
-| E | Existing Quarto project, need QA | [`examples/scenario-E-existing-project.md`](examples/scenario-E-existing-project.md) |
+| A | Just an idea, nothing written | [`examples/scenario-A-ideas-only-en.md`](examples/scenario-A-ideas-only-en.md) |
+| B | Scattered notes, slides, emails | [`examples/scenario-B-fragments-en.md`](examples/scenario-B-fragments-en.md) |
+| C | A complete Word/Markdown draft | [`examples/scenario-C-word-draft-en.md`](examples/scenario-C-word-draft-en.md) |
+| D | Final manuscript, need formatting | [`examples/scenario-D-complete-manuscript-en.md`](examples/scenario-D-complete-manuscript-en.md) |
+| E | Existing Quarto project, need QA | [`examples/scenario-E-existing-project-en.md`](examples/scenario-E-existing-project-en.md) |
 
 ### What makes this different
 
@@ -97,11 +97,11 @@ The agent picks the flow based on what you hand it — not a fixed pipeline:
 
 | 场景 | 你的素材 | 示例 |
 |------|----------|------|
-| A | 只有想法 | [`examples/scenario-A-ideas-only.md`](examples/scenario-A-ideas-only.md) |
-| B | 零散的笔记、PPT、邮件 | [`examples/scenario-B-fragments.md`](examples/scenario-B-fragments.md) |
-| C | 完整的 Word/Markdown 稿 | [`examples/scenario-C-word-draft.md`](examples/scenario-C-word-draft.md) |
-| D | 写好的稿子，只要排版 | [`examples/scenario-D-complete-manuscript.md`](examples/scenario-D-complete-manuscript.md) |
-| E | 已有 Quarto 项目，需要检查 | [`examples/scenario-E-existing-project.md`](examples/scenario-E-existing-project.md) |
+| A | 只有想法 | [`examples/scenario-A-ideas-only-zh.md`](examples/scenario-A-ideas-only-zh.md) |
+| B | 零散的笔记、PPT、邮件 | [`examples/scenario-B-fragments-zh.md`](examples/scenario-B-fragments-zh.md) |
+| C | 完整的 Word/Markdown 稿 | [`examples/scenario-C-word-draft-zh.md`](examples/scenario-C-word-draft-zh.md) |
+| D | 写好的稿子，只要排版 | [`examples/scenario-D-complete-manuscript-zh.md`](examples/scenario-D-complete-manuscript-zh.md) |
+| E | 已有 Quarto 项目，需要检查 | [`examples/scenario-E-existing-project-zh.md`](examples/scenario-E-existing-project-zh.md) |
 
 ### 这套 skill 解决了什么问题
 
