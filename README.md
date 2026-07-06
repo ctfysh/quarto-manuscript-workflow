@@ -20,6 +20,16 @@ Activate the skill in three ways:
 
 Once activated, tell the agent your materials and target journal — everything else is automated.
 
+### Examples by scenario
+
+| Scenario | What you have | Example |
+|----------|--------------|---------|
+| A | Just an idea, nothing written | [`examples/scenario-A-ideas-only.md`](examples/scenario-A-ideas-only.md) |
+| B | Scattered notes, slides, emails | [`examples/scenario-B-fragments.md`](examples/scenario-B-fragments.md) |
+| C | A complete Word/Markdown draft | [`examples/scenario-C-word-draft.md`](examples/scenario-C-word-draft.md) |
+| D | Final manuscript, need formatting | [`examples/scenario-D-complete-manuscript.md`](examples/scenario-D-complete-manuscript.md) |
+| E | Existing Quarto project, need QA | [`examples/scenario-E-existing-project.md`](examples/scenario-E-existing-project.md) |
+
 ### What makes this different
 
 | Problem | This skill |
@@ -82,6 +92,16 @@ The agent picks the flow based on what you hand it — not a fixed pipeline:
 | **显式调用** | "加载 manuscript skill" | 直接触发 `skill(name="quarto-manuscript-workflow")` |
 
 激活后告诉 Agent 你的素材和目标期刊即可，剩下全自动。
+
+### 场景示例
+
+| 场景 | 你的素材 | 示例 |
+|------|----------|------|
+| A | 只有想法 | [`examples/scenario-A-ideas-only.md`](examples/scenario-A-ideas-only.md) |
+| B | 零散的笔记、PPT、邮件 | [`examples/scenario-B-fragments.md`](examples/scenario-B-fragments.md) |
+| C | 完整的 Word/Markdown 稿 | [`examples/scenario-C-word-draft.md`](examples/scenario-C-word-draft.md) |
+| D | 写好的稿子，只要排版 | [`examples/scenario-D-complete-manuscript.md`](examples/scenario-D-complete-manuscript.md) |
+| E | 已有 Quarto 项目，需要检查 | [`examples/scenario-E-existing-project.md`](examples/scenario-E-existing-project.md) |
 
 ### 这套 skill 解决了什么问题
 
