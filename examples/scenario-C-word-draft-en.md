@@ -70,6 +70,7 @@ title: "Microplastic Distribution in Yangtze River Sediments"
 author:
   - name: Wei Zhang
     affiliation: Nanjing University
+    corresponding: true
 abstract: |
   <!-- TODO: extract or write abstract -->
 bibliography: references.bib
@@ -80,19 +81,35 @@ bibliography: references.bib
 Microplastic pollution in freshwater systems has emerged as a major
 environmental concern [@smith2020]. Unlike marine environments, the
 distribution and fate of microplastics in river sediments remain poorly
-characterized [@zhang2021]...
-
-...body text continues...
+characterized [@zhang2021]. Previous studies have documented microplastic
+abundance in several major Chinese rivers, yet the Yangtze River—the longest
+river in Asia—remains underrepresented in the literature. Understanding the
+spatial distribution, polymer composition, and potential sources of
+microplastics in Yangtze sediments is critical for assessing the ecological
+risks to freshwater biota and informing targeted pollution control strategies.
 
 ## Methods {#sec-methods}
 
 ### Study Area {#sec-study-area}
 
-Sediment samples were collected from 15 sites along the Yangtze River...
+Sediment samples were collected from 15 sites spanning approximately 1,200 km
+along the middle and lower reaches of the Yangtze River, from Yichang to
+Shanghai. At each site, triplicate surface sediment samples (0–5 cm depth)
+were obtained using a Van Veen grab sampler during the dry season
+(November–December 2022). Sampling locations were selected to represent
+diverse land-use contexts, including urban, agricultural, and industrial
+areas, to capture a comprehensive picture of microplastic pollution across
+the river basin.
 
 ### Laboratory Analysis {#sec-lab}
 
-Samples were processed using density separation and FTIR spectroscopy...
+Microplastics were extracted from sediment using density separation with a
+sodium chloride solution (1.2 g cm⁻³), followed by wet peroxide oxidation to
+remove natural organic matter. Particles were visually identified and sorted
+under a stereomicroscope, then polymer characterization was performed using
+Fourier-transform infrared spectroscopy (FTIR) in attenuated total reflectance
+(ATR) mode. Each particle was categorized by shape (fiber, fragment, film,
+sphere), color, and polymer type.
 
 ## Results {#sec-results}
 
@@ -103,16 +120,37 @@ sediment (Fig. 1).
 
 ![Polymer composition across sites](figures/fig3-polymer-distribution.png){#fig-polymers}
 
+Polyethylene (PE) and polypropylene (PP) were the dominant polymer types,
+accounting for 42% and 28% of total particles, respectively, suggesting that
+packaging and agricultural films are major sources. Fibers constituted the
+most common shape across all sites (mean 54%), followed by fragments (31%)
+and films (11%). No significant correlation was found between microplastic
+abundance and sediment grain size, indicating that factors such as
+hydrodynamic conditions and proximity to urban centers play a more important
+role in microplastic deposition.
+
 ## Discussion {#sec-discussion}
 
 The concentrations observed in this study are comparable to those reported
-in the Pearl River [@wang2022 <!-- TODO: verify DOI -->]...
+in the Pearl River [@wang2022] and the Danube River [@kumar2019], suggesting
+that microplastic contamination in large river systems follows broadly
+similar accumulation patterns driven by urbanization and industrial activity.
 
 ## Conclusion {#sec-conclusion}
 
-...
+This study provides a comprehensive assessment of microplastic contamination
+in Yangtze River sediments, revealing widespread pollution with concentrations
+ranging from 120 to 850 particles per kg of dry sediment. Polyethylene and
+polypropylene dominated the polymer profile, implicating packaging and
+agricultural sources as primary contributors. These findings establish a
+critical baseline for future monitoring efforts and underscore the need for
+standardized analytical protocols to enable meaningful comparisons across
+freshwater ecosystems globally.
 
 ## References {#sec-references}
+
+::: {#refs}
+:::
 ```
 
 ---
@@ -163,6 +201,8 @@ Then runs `quarto add kapsner/authors-block` to install the extension, creating 
 ✅ figures/ directory exists with 5 extracted images
 ✅ references.bib with 3 entries (1 TODO for Wang 2022)
 ```
+
+With the extension installed and the project configured, the agent renders the manuscript:
 
 ```bash
 quarto render

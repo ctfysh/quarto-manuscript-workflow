@@ -31,6 +31,25 @@ Agent reads each fragment and assigns IMRaD labels:
 Agent assembles fragments into IMRaD order, preserving uncertain fragments with markers:
 
 ```markdown
+---
+title: "Microplastic Pollution in Lake Sediments: A Case Study from the Yangtze Basin"
+author:
+  - name: First Author
+    corresponding: true
+    affiliations:
+      - Department of Environmental Science, University of the Yangtze
+  - name: Second Author
+    affiliations:
+      - State Key Laboratory of Lake Science and Environment, Chinese Academy of Sciences
+  - name: Corresponding Author
+    affiliations:
+      - Department of Environmental Science, University of the Yangtze
+abstract: |
+  <!-- TODO: Write a 150–250 word abstract summarizing the study objectives,
+  methods, key findings, and implications. -->
+bibliography: references.bib
+---
+
 ## Introduction {#sec-intro}
 
 <!-- TODO: Introduction — no fragments found for this section, ~500 words needed -->
@@ -109,3 +128,35 @@ Researcher responds with clarification, agent:
 3. Renders
 
 Output: a structured draft with content from fragments, TODO placeholders for gaps.
+
+---
+
+### Generated `_quarto.yml`
+
+After applying the template, a `_quarto.yml` configuration file is generated alongside `index.qmd`:
+
+```yaml
+project:
+  type: manuscript
+
+manuscript:
+  article: index.qmd
+
+lang: en
+
+format:
+  docx:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+
+execute:
+  freeze: false
+
+bibliography: references.bib
+
+filters:
+  - abstract.lua
+  - authors-block
+```
+
+> **Note:** The `authors-block` extension requires `quarto add kapsner/authors-block` to be run before the first render. The `abstract.lua` filter is a custom Lua script that moves the abstract from YAML frontmatter into the manuscript body.

@@ -38,16 +38,17 @@ After Step 3, the directory also contains `_extensions/kapsner/authors-block/` (
 ```markdown
 ---
 title: "Microplastic Pollution in Freshwater Ecosystems: Sources, Fate, and Ecological Impacts"
-author: "<!-- TODO: add author info -->"
+author:
+  - name: "First Author"  # TODO: replace with actual author info
+    affiliation: "University"
+    corresponding: true
+  - name: "Second Author"  # TODO: replace with actual author info
+    affiliation: "University"
 date: today
+abstract: |
+  <!-- TODO: Abstract — 150–250 words summarizing scope, key findings, conclusions -->
 bibliography: references.bib
-format:
-  docx:
-    reference-doc: template.docx
-    csl: nature.csl
 ---
-
-<!-- TODO: Abstract — 150–250 words summarizing scope, key findings, conclusions -->
 
 ## Introduction {#sec-intro}
 
@@ -88,7 +89,7 @@ format:
   - Implications for policy and management
   - Urgent research needs -->
 
-## References {#sec-references}
+# References
 
 <!-- TODO: add references -->
 ```

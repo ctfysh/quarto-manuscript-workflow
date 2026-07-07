@@ -31,6 +31,25 @@ Agent 读取每段碎片并标记 IMRaD 归属：
 Agent 按 IMRaD 顺序组装，对不确定的碎片保留标记：
 
 ```markdown
+---
+title: "长江流域湖泊沉积物微塑料污染特征研究"
+author:
+  - name: 第一作者  # TODO: 替换为实际作者
+    corresponding: true
+    affiliations:
+      - 长江大学环境科学系
+  - name: 第二作者  # TODO: 替换为实际作者
+    affiliations:
+      - 中国科学院湖泊科学与环境国家重点实验室
+  - name: 通讯作者  # TODO: 替换为实际作者
+    affiliations:
+      - 长江大学环境科学系
+abstract: |
+  <!-- TODO: 撰写 150–250 字的摘要，概述研究目标、
+  方法、主要发现和结论 -->
+bibliography: references.bib
+---
+
 ## 引言 {#sec-intro}
 
 <!-- TODO: 引言 — 未找到相关碎片，需补充约 500 字 -->
@@ -109,3 +128,35 @@ Agent 一次性展示所有缺口（批量提问，非逐个询问）：
 3. 渲染
 
 输出：包含碎片内容的完整草稿，空缺处保留 TODO 占位符。
+
+---
+
+### 生成的 `_quarto.yml`
+
+套用模板后，系统会生成与 `index.qmd` 并行的 `_quarto.yml` 配置文件：
+
+```yaml
+project:
+  type: manuscript
+
+manuscript:
+  article: index.qmd
+
+lang: en
+
+format:
+  docx:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+
+execute:
+  freeze: false
+
+bibliography: references.bib
+
+filters:
+  - abstract.lua
+  - authors-block
+```
+
+> **注意：** `authors-block` 扩展需要先运行 `quarto add kapsner/authors-block` 才能渲染。`abstract.lua` 是一个自定义 Lua 过滤器，它将 YAML 前置内容中的摘要移入正文。

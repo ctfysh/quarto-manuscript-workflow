@@ -11,7 +11,7 @@
 1. **标题？** — 暂定标题即可，之后可以改。
 2. **章节结构？** — 标准 IMRaD，还是你有特定大纲？"
 
-**研究者：** *"标题：'Microplastic Pollution in Freshwater Ecosystems: Sources, Fate, and Ecological Impacts'。标准 IMRaD 就行。"*
+**研究者：** *"标题：'淡水生态系统中微塑料污染：来源、归趋与生态影响'。标准 IMRaD 就行。"*
 
 ---
 
@@ -37,13 +37,18 @@ microplastics-review/
 
 ```markdown
 ---
-title: "Microplastic Pollution in Freshwater Ecosystems: Sources, Fate, and Ecological Impacts"
-author: "<!-- TODO: 添加作者信息 -->"
+title: "淡水生态系统中微塑料污染：来源、归趋与生态影响"
+author:
+  - name: "第一作者"  # TODO: 替换为实际作者信息
+    affiliation: "某大学"
+    corresponding: true
+  - name: "第二作者"  # TODO: 替换为实际作者信息
+    affiliation: "某大学"
 date: today
+abstract: |
+  <!-- TODO: 摘要 — 150–250 字，概述范围、主要发现和结论 -->
 bibliography: references.bib
 ---
-
-<!-- TODO: 摘要 — 150–250 字，概述范围、主要发现和结论 -->
 
 ## 引言 {#sec-intro}
 
@@ -84,7 +89,7 @@ bibliography: references.bib
   - 对政策与管理的启示
   - 紧迫的研究需求 -->
 
-## 参考文献 {#sec-references}
+# 参考文献
 
 <!-- TODO: 添加参考文献 -->
 ```
@@ -124,7 +129,7 @@ filters:
 - ✅ `lang: en` 匹配 Nature（英文期刊）
 - ✅ `cite-method: citeproc`（Nature，不在例外列表）
 - ✅ CSL 和 reference-doc 来自同一期刊
-- ✅ 正文语言与 `lang: en` 一致（TODO 块为英文）
+- ✅ 正文语言与 `lang: en` 一致（TODO 块为中文占位，正文待填充）
 
 ---
 
