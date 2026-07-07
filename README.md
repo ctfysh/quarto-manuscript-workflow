@@ -20,6 +20,8 @@ Activate the skill in three ways:
 
 Once activated, tell the agent your materials and target journal. Everything else is automated.
 
+![Quarto Manuscript Workflow overview](assets/banner-en.png)
+
 ### Examples by scenario
 
 | Scenario | What you have | Example |
@@ -92,6 +94,8 @@ The agent picks the flow based on what you hand it, not a fixed pipeline:
 | **显式调用** | "加载 manuscript skill" | 直接触发 `skill(name="quarto-manuscript-workflow")` |
 
 激活后告诉 Agent 你的素材和目标期刊即可，剩下全自动。
+
+![Quarto Manuscript Workflow 概览](assets/banner-zh.png)
 
 ### 场景示例
 
