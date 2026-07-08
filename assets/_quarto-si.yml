@@ -1,0 +1,22 @@
+project:
+  type: default
+  output-dir: _supplementary
+
+title: "Supporting Information"
+
+# Clear metadata inherited from _quarto.yml
+authors: []
+abstract: ""
+keywords: []
+
+crossref:
+  fig-title: "Figure S"
+  tbl-title: "Table S"
+  eq-title: "Equation S"
+
+format:
+  docx:
+    reference-doc: template.docx
+    csl: american-chemical-society.csl
+
+bibliography: references.bib
