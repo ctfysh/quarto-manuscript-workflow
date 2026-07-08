@@ -31,55 +31,61 @@ Once activated, tell the agent your materials and target journal. Everything els
 | C | A complete Word/Markdown draft | [`examples/scenario-C-word-draft-en.md`](examples/scenario-C-word-draft-en.md) |
 | D | Final manuscript, need formatting | [`examples/scenario-D-complete-manuscript-en.md`](examples/scenario-D-complete-manuscript-en.md) |
 | E | Existing Quarto project, need QA | [`examples/scenario-E-existing-project-en.md`](examples/scenario-E-existing-project-en.md) |
+| F | Need Supporting Information with SI setup | [`examples/scenario-F-si-setup-en.md`](examples/scenario-F-si-setup-en.md) |
+| G | Got reviewer comments, need revision | [`examples/scenario-G-revision-en.md`](examples/scenario-G-revision-en.md) |
 
 ### What makes this different
 
-| Problem | This skill |
-|---------|-----------|
-| You have fragments (meeting notes, PPT slides, chat messages, half a draft) | Agent classifies each fragment, assembles into IMRaD, marks uncertain segments |
-| You only have an idea and a target journal | Agent does a 2-question interview (title + journal), scaffolds the full project with TODO blocks for what's missing |
-| You have a complete Word/Markdown draft | Agent parses styles, extracts figures and citations, builds `.qmd`, applies journal template |
-| You'll iterate on structure | Agent reorders sections, swaps figures, adds citations, re-renders on each request |
-| You don't know what's missing | Coverage report: ✅ Intro ✅ Methods ❌ Results; all gaps shown at once, not one-at-a-time |
+| Problem | Solution |
+|---------|----------|
+| Fragments (notes, slides, chats, half a draft) | Agent classifies → IMRaD assembly → marks uncertainty |
+| Only an idea + target journal | 2-question interview → full scaffold with TODO blocks |
+| Complete Word/Markdown draft | Parse styles → extract figures/citations → generate bib from DOIs → IMRaD check → apply template |
+| Iterate on structure | Reorder sections, swap figures, add citations, re-render on demand |
+| Don't know what's missing | Coverage report: ✅ Intro ✅ Methods ❌ Results — all gaps at once |
+| **Need Supporting Information** | Create si.qmd + _quarto-si.yml → set up standalone render → post-process equation numbers |
 
-The agent never blocks on missing material. It inserts `<!-- TODO: ... -->` blocks and keeps going. The project is always renderable.
+The agent never blocks on missing material — inserts `<!-- TODO: ... -->` and keeps going.
 
 ### Input → Output
 
-| You give the agent… | The agent… |
-|---------------------|------------|
-| A target journal (just say the name) | Looks up the CSL, copies the matching reference doc, generates `_quarto.yml` |
-| Word `.docx` / Markdown / notes / slides | Parses content into `.qmd` sections, extracts figures to `figures/`, generates bib entries from DOIs |
-| Just a topic ("microplastics review for Nature") | Structured interview (2 questions) → scaffolds full project with TODO blocks |
-| "Swap to ES&T" | Swaps CSL and configuration for the new journal, re-renders |
+| You give… | Agent does… |
+|-----------|-------------|
+| Journal name | Looks up CSL, copies reference-doc, generates `_quarto.yml` |
+| `.docx` / Markdown / notes / slides | Parses into `.qmd` sections, extracts figures, generates bib entries |
+| Topic + journal (e.g. "microplastics review for Nature") | 2-question interview → full scaffold with TODOs |
+| "Swap to ES&T" | Swaps CSL + config, re-renders |
 | "Methods after Results" | Reorders sections, re-renders |
 
-Output is always a rendered `.docx` with:
-- Journal-specific citation formatting (CSL)
-- Consistent typography (reference doc)
-- Figures placed by Quarto
-- Abstract processed through a Lua filter from YAML into body text
-- **Optional Supporting Information**: standalone `si.qmd` with S-prefix numbering via Quarto profiles
+Output: rendered `.docx` with journal CSL, reference-doc typography, auto-placed figures, abstract from YAML, optional SI with S-prefix numbering.
 
 ### Adaptive workflow
 
-The agent picks the flow based on what you hand it, not a fixed pipeline:
+Agent picks the flow based on your materials, not a fixed pipeline:
 
-- **Ideas only** → 2 questions (title? journal?) → scaffold + TODOs → template → render
+- **Ideas only** → 2 questions → scaffold + TODOs → template → render
 - **Fragments** → classify → assemble → coverage report → template → render
 - **Full draft** → parse → extract → template → render
 - **Existing Quarto project** → verify config → check cross-refs → re-render
-- **Revision request** → edit → pre-flight check → render → deliver
+- **Revision request** → edit → pre-flight → render → deliver
 
-### Pre-flight check (agent runs this before render)
+### Pre-flight checklist (agent runs this before render)
 
-- `.gitignore` set up for `_manuscript/`, `_freeze/`, `_supplementary/`
-- `freeze` matches phase (`false` while editing, `true` for final)
-- `lang` matches journal language (all current journals → `en`)
-- `cite-method` matches the journal
-- CSL and reference doc are from the same journal
-- Manuscript body language matches `lang`; auto-fixes mismatches, marks uncertain segments with `<!-- LANG-CHECK -->` comments
-- **If SI exists**: `_quarto-si.yml` project type is `default` (not `manuscript`), `crossref` present, equation post-processing applied, cross-references use plain text
+- `.gitignore` covers `_manuscript/`, `_freeze/`, `_supplementary/`
+- `freeze:` matches phase (`false` editing, `true` final)
+- `lang:` matches journal (all current → `en`)
+- `cite-method` matches journal (default `citeproc`; ACS/ES&T → `natbib`)
+- CSL + reference-doc from same journal
+- Body language matches `lang:`; mark uncertain segments with `<!-- LANG-CHECK -->`
+- Every `[@key]` has matching `references.bib` entry
+- Every `@fig-`/`@tbl-`/`@eq-`/`@sec-` label is unique
+- No `TODO`/`FIXME`/`XXX` remain (unless acknowledged)
+- All figure paths resolve
+- **If SI exists**: `_quarto-si.yml` `project.type` is `default`, `crossref` present
+- **If SI exists**: `bash scripts/render-si.sh` runs without error
+- **If SI exists**: equation numbers show `(S1)` not `(1)`
+- **If SI exists**: cross-references between main and SI use plain text, not `@fig-` (no automated check — agent must verify manually)
+- **If SI exists**: every plain-text SI ref in `index.qmd` has a matching `{#fig-...}` label in `si.qmd`
 
 ---
 
@@ -108,52 +114,57 @@ The agent picks the flow based on what you hand it, not a fixed pipeline:
 | C | 完整的 Word/Markdown 稿 | [`examples/scenario-C-word-draft-zh.md`](examples/scenario-C-word-draft-zh.md) |
 | D | 写好的稿子，只要排版 | [`examples/scenario-D-complete-manuscript-zh.md`](examples/scenario-D-complete-manuscript-zh.md) |
 | E | 已有 Quarto 项目，需要检查 | [`examples/scenario-E-existing-project-zh.md`](examples/scenario-E-existing-project-zh.md) |
+| F | 需要 Supporting Information，配置 SI 独立渲染 | [`examples/scenario-F-si-setup-zh.md`](examples/scenario-F-si-setup-zh.md) |
+| G | 收到审稿意见，需要修改 | [`examples/scenario-G-revision-zh.md`](examples/scenario-G-revision-zh.md) |
 
 ### 这套 skill 解决了什么问题
 
-| 问题 | 这套 skill 的做法 |
-|------|-------------------|
-| 你有碎片材料（会议笔记、PPT 幻灯片、聊天记录、半成品草稿） | Agent 将每段碎片分类，按 IMRaD 顺序组装，对不确定的段落做标记 |
-| 你只有一个想法和一本目标期刊 | Agent 问 2 个问题（标题 + 期刊），搭建完整项目骨架，空缺处插入 `<!-- TODO -->` |
-| 你有一份完整的 Word/Markdown 稿 | Agent 解析段落样式、提取图表和引用，构建 `.qmd`，套用期刊模板 |
-| 你需要反复调整结构 | Agent 调整章节顺序、替换图表、补充引用，每次按需重新渲染 |
-| 你不知道缺什么 | 覆盖率报告：✅ 引言 ✅ 方法 ❌ 结果；所有缺口一次性展示，非逐个询问 |
+| 问题 | 做法 |
+|------|------|
+| 碎片材料（笔记、PPT、聊天、半成品） | 分类 → IMRaD 组装 → 标记不确定段落 |
+| 只有想法 + 目标期刊 | 问 2 个问题 → 搭建骨架 + TODO |
+| 完整的 Word/Markdown 稿 | 解析样式 → 提取图表和引用 → 构建 `.qmd` → 套模板 |
+| 反复调整结构 | 调顺序、换图、补引用，按需重新渲染 |
+| 不知道缺什么 | 覆盖率报告：✅ 引言 ✅ 方法 ❌ 结果，一次展示所有缺口 |
 
-Agent 从不因缺内容而阻塞。缺的材料插入 `<!-- TODO: ... -->` 标记后继续推进。项目始终可渲染。
+Agent 从不因缺内容阻塞——插入 `<!-- TODO: ... -->` 后继续推进。
 
 ### 输入 → 输出
 
-| 你给 Agent… | Agent… |
-|-------------|--------|
-| 目标期刊名称 | 查找 CSL，复制对应的 reference-doc，生成 `_quarto.yml` |
-| Word `.docx` / Markdown / 笔记 / 幻灯片 | 解析内容到 `.qmd` 各章节，提取图片到 `figures/`，通过 DOI 生成 bib 条目 |
-| 只有一个选题（如"微塑料综述，投 Nature"） | 结构化访谈（2 个问题）→ 搭建完整项目骨架 + TODO |
+| 你给… | Agent… |
+|-------|--------|
+| 期刊名称 | 查找 CSL，复制 reference-doc，生成 `_quarto.yml` |
+| `.docx` / Markdown / 笔记 / 幻灯片 | 解析到 `.qmd`，提取图片，通过 DOI 生成 bib |
+| 选题 + 期刊（如"微塑料综述，投 Nature"） | 问 2 个问题 → 搭建骨架 + TODO |
 | "改投 ES&T" | 换 CSL 和配置，重新渲染 |
-| "把方法部分移到结果后面" | 重新排布章节，重新渲染 |
+| "把方法移到结果后面" | 重排章节，重新渲染 |
 
-输出始终是一个已排版的 `.docx`：
-- 期刊专属引用格式（CSL）
-- 统一版式（reference-doc）
-- 图片由 Quarto 自动排版
-- 摘要通过 Lua 过滤器从 YAML 移至正文
-- **可选 Supporting Information**：独立 `si.qmd`，S 前缀编号，通过 Quarto profile 渲染
+输出：已排版的 `.docx`，含期刊 CSL、reference-doc 版式、自动排图、摘要移至正文、可选 SI（S 前缀编号）。
 
 ### 自适应工作流
 
-Agent 不跑固定流水线——根据你给的材料类型自动选择策略：
+Agent 根据素材类型自动选择策略：
 
-- **只有想法** → 问 2 个问题（标题？期刊？）→ 骨架 + TODO → 套模板 → 渲染
+- **只有想法** → 问 2 个问题 → 骨架 + TODO → 套模板 → 渲染
 - **碎片材料** → 分类 → 拼装 → 缺口报告 → 套模板 → 渲染
-- **完整稿子** → 解析 → 提图提引用 → 套模板 → 渲染
-- **已有 Quarto 项目** → 配置验证 → 交叉引用检查 → 重新渲染
+- **完整稿子** → 解析 → 提取 → 套模板 → 渲染
+- **已有 Quarto 项目** → 验证配置 → 检查交叉引用 → 重新渲染
 - **修改请求** → 编辑 → 起飞前检查 → 渲染 → 交付
 
 ### 起飞前检查（Agent 每次渲染前自动执行）
 
-- `.gitignore` 是否已包含 `_manuscript/`、`_freeze/`、`_supplementary/`
-- `freeze` 是否与当前阶段匹配（编辑中 = `false`，定稿 = `true`）
-- `lang` 是否与期刊语言一致（当前全部期刊 → `en`）
-- `cite-method` 是否与所选期刊一致
-- CSL 和 reference-doc 是否来自同一期刊
-- 正文语言是否与 `lang` 匹配——自动修复不匹配段落，不确定的标记 `<!-- LANG-CHECK -->`
-- **如含 SI**：`_quarto-si.yml` 中 `project.type` 为 `default`、含 `crossref`、方程编号已后处理、跨文件引用用纯文本
+- `.gitignore` 已包含 `_manuscript/`、`_freeze/`、`_supplementary/`
+- `freeze:` 与当前阶段匹配（编辑中 = `false`，定稿 = `true`）
+- `lang` 与期刊语言一致（当前全部期刊 → `en`）
+- `cite-method` 与所选期刊一致（默认 `citeproc`；ACS/ES&T → `natbib`）
+- CSL 和 reference-doc 来自同一期刊
+- 正文语言与 `lang` 匹配，不确定的标记 `<!-- LANG-CHECK -->`
+- 每个 `[@key]` 在 `references.bib` 中有对应条目
+- 每个 `@fig-`/`@tbl-`/`@eq-`/`@sec-` 标签唯一
+- 无残留 `TODO`/`FIXME`/`XXX`（已确认的除外）
+- 所有图片路径可解析
+- **如含 SI**：`_quarto-si.yml` 中 `project.type` 为 `default`，含 `crossref`
+- **如含 SI**：`bash scripts/render-si.sh` 运行无报错
+- **如含 SI**：方程编号显示 `(S1)` 而非 `(1)`
+- **如含 SI**：跨文件引用使用纯文本，非 `@fig-`（无自动检查，Agent 需手动验证）
+- **如含 SI**：`index.qmd` 中每个纯文本 SI 引用都有对应的 `{#fig-...}` 标签存在于 `si.qmd`

@@ -74,6 +74,8 @@ author:
 abstract: |
   <!-- TODO: 提取或撰写摘要 -->
 bibliography: references.bib
+filters:
+  - authors-block
 ---
 
 ## 引言 {#sec-intro}
@@ -166,18 +168,20 @@ format:
   docx:
     reference-doc: template.docx
     csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua          # 将摘要从 YAML 移至正文
   pdf:
+    reference-doc: template.docx
     csl: environmental-science-and-technology.csl
-    cite-method: natbib               # ES&T 例外
+    filters:
+      - scripts/abstract.lua
+    cite-method: natbib
 execute:
   freeze: false
 bibliography: references.bib
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-然后运行 `quarto add kapsner/authors-block` 安装扩展，生成 `_extensions/kapsner/authors-block/`。
+然后运行 `quarto add kapsner/authors-block` 安装扩展，生成 `_extensions/kapsner/authors-block/`。同时在 `index.qmd` frontmatter 中添加 `filters: [authors-block]`（不在 `_quarto.yml` 中，将 filter 限定在文章范围内，而非项目配置）。
 
 ```
 ✅ figures/ 目录已创建，内含 5 张提取图片

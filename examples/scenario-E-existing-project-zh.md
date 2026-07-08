@@ -26,7 +26,7 @@ bibliography: references.bib     # ✅ 文件存在
 
 **发现问题：**
 - `template.docx` 和 `nature.csl` 被引用但不存在 → Agent 从 skill 资产中复制过去
-- 没有 `filters:` 配置 → Agent 添加 `abstract.lua` 过滤器
+- 没有 `filters:` 配置 → Agent 复制 `abstract.lua` 到 `scripts/abstract.lua` 并添加 `scripts/abstract.lua` 过滤器
 - 没有设置 `lang:` → Agent 添加 `lang: en`
 
 ### Agent 执行修复：
@@ -40,12 +40,14 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
-filters: [abstract.lua]
+    filters:
+      - scripts/abstract.lua
 lang: en
 execute:
   freeze: false
 bibliography: references.bib
-```
+
+> **注意：** 此项目已有作者格式，无需安装 `authors-block` 扩展。
 
 ## 研究者的 `index.qmd`：
 
@@ -179,7 +181,7 @@ quarto render
 **Agent：** *"项目已修复并渲染完成。已修复的问题：*
 
 - *将缺失的 template.docx 和 nature.csl 复制到项目根目录*
-- *在 _quarto.yml 中添加了 abstract.lua 过滤器*
+- *创建 scripts/ 目录并在 _quarto.yml 中添加了 scripts/abstract.lua 过滤器*
 - *在 _quarto.yml 中添加了 `lang: en`*
 - *搜索并补上了 Liu 2022 的 DOI 到 references.bib*
 

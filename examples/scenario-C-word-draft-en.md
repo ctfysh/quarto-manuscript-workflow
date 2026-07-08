@@ -74,6 +74,8 @@ author:
 abstract: |
   <!-- TODO: extract or write abstract -->
 bibliography: references.bib
+filters:
+  - authors-block
 ---
 
 ## Introduction {#sec-intro}
@@ -184,18 +186,20 @@ format:
   docx:
     reference-doc: template.docx
     csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua          # moves abstract from YAML to manuscript body
   pdf:
+    reference-doc: template.docx
     csl: environmental-science-and-technology.csl
-    cite-method: natbib               # ES&T exception
+    filters:
+      - scripts/abstract.lua
+    cite-method: natbib
 execute:
   freeze: false
 bibliography: references.bib
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-Then runs `quarto add kapsner/authors-block` to install the extension, creating `_extensions/kapsner/authors-block/`.
+Then runs `quarto add kapsner/authors-block` to install the extension, creating `_extensions/kapsner/authors-block/`. Also adds `filters: [authors-block]` to `index.qmd` frontmatter (not in `_quarto.yml`, to keep the filter scoped to the article, not the project config).
 
 ```
 ✅ figures/ directory exists with 5 extracted images

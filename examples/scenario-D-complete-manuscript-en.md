@@ -32,7 +32,7 @@ The manuscript is complete, so the agent skips the interview and gap analysis an
 
 ## Step 2: Apply Template
 
-Agent copies `water-research.csl` and `template.docx`, generates `index.qmd` and `_quarto.yml`:
+Agent copies `water-research.csl` and `template.docx`, copies `abstract.lua` to `scripts/`, generates `index.qmd` and `_quarto.yml`:
 
 ### Agent generates `index.qmd`:
 
@@ -80,7 +80,7 @@ Grab samples of raw water and treated water were collected from six DWTPs locate
 
 ## Microplastic Extraction and Identification
 
-Water samples were sequentially filtered through 500 μm, 100 μm, and 20 μm stainless steel mesh sieves. Retained material was subjected to wet peroxide oxidation (30% H2O2 at 60 °C for 48 h) to remove organic matter, followed by density separation using a NaCl solution (1.2 g cm^−3^). The supernatant was filtered onto 0.45 μm polycarbonate membrane filters for analysis.
+Water samples were sequentially filtered through 500 μm, 100 μm, and 20 μm stainless steel mesh sieves. Retained material was subjected to wet peroxide oxidation (30% H₂O₂ at 60 °C for 48 h) to remove organic matter, followed by density separation using a NaCl solution (1.2 g cm^−3^). The supernatant was filtered onto 0.45 μm polycarbonate membrane filters for analysis.
 
 Particle identification and polymer characterization were performed using a Fourier-transform infrared (FTIR) microscope (Thermo Nicolet iN10 MX) operating in reflection mode. Spectra were acquired in the range of 4,000–650 cm^−1^ at 8 cm^−1^ resolution with 32 co-added scans. A spectral library search was conducted against a database of polymer reference spectra; matches with a hit quality index ≥ 0.70 were accepted.
 
@@ -136,13 +136,16 @@ format:
   docx:
     reference-doc: template.docx
     csl: water-research.csl
-  pdf:                       # also configures PDF output
+    filters:
+      - scripts/abstract.lua
+  pdf:
+    reference-doc: template.docx
     csl: water-research.csl
+    filters:
+      - scripts/abstract.lua
 execute:
   freeze: true               # final render — freeze
 bibliography: references.bib
-filters:
-  - abstract.lua
 ```
 
 No `authors-block` extension needed if the manuscript already has proper author formatting.

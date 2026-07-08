@@ -32,7 +32,7 @@ Agent 检查全部章节——内容完整，无 TODO，无缺口：
 
 ## 第 2 步：套用模板
 
-Agent 复制 `water-research.csl` 和 `template.docx`，生成 `index.qmd` 和 `_quarto.yml`：
+Agent 复制 `water-research.csl`、`template.docx` 和 `abstract.lua`（至 `scripts/`），生成 `index.qmd` 和 `_quarto.yml`：
 
 ### Agent 生成 `index.qmd`：
 
@@ -136,13 +136,16 @@ format:
   docx:
     reference-doc: template.docx
     csl: water-research.csl
-  pdf:                       # 同时配置 PDF 输出
+    filters:
+      - scripts/abstract.lua
+  pdf:
+    reference-doc: template.docx
     csl: water-research.csl
+    filters:
+      - scripts/abstract.lua
 execute:
   freeze: true               # 定稿渲染 — freeze
 bibliography: references.bib
-filters:
-  - abstract.lua
 ```
 
 稿件已有作者格式，无需 `authors-block` 扩展。

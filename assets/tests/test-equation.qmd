@@ -1,0 +1,21 @@
+---
+title: "Equation Numbering Test"
+format: docx
+---
+
+## Introduction
+
+This document tests equation numbering post-processing for Supporting
+Information files.
+
+The concentration is calculated as:
+
+$$
+C = \frac{N}{V}
+$$ {#eq-conc}
+
+Additional characterization data are presented below.
+
+$$
+y = \alpha + \beta x + \epsilon
+$$ {#eq-reg}

@@ -148,15 +148,19 @@ format:
   docx:
     reference-doc: template.docx
     csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua          # moves abstract from YAML to manuscript body
+  pdf:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua
+    cite-method: natbib
 
 execute:
   freeze: false
 
 bibliography: references.bib
-
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-> **Note:** The `authors-block` extension requires `quarto add kapsner/authors-block` to be run before the first render. The `abstract.lua` filter is a custom Lua script that moves the abstract from YAML frontmatter into the manuscript body.
+> **Note:** The `authors-block` extension requires `quarto add kapsner/authors-block` to be run before the first render, and `filters: [authors-block]` must be added to `index.qmd` frontmatter (not in `_quarto.yml`, to avoid leaking into SI rendering). The `abstract.lua` filter is a custom Lua script that moves the abstract from YAML frontmatter into the manuscript body.

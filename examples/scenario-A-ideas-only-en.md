@@ -25,10 +25,11 @@ microplastics-review/
 ├── index.qmd                # article source with TODO blocks
 ├── references.bib           # empty, bib entries to be added
 ├── figures/                 # empty, figures to be added
+├── scripts/
+│   └── abstract.lua         # copied from skill assets
 ├── template.docx            # copied from skill assets
 ├── nature.csl               # copied from skill journal-templates/
-├── abstract.lua             # copied from skill assets
-└── .gitignore               # _manuscript/, _freeze/
+└── .gitignore               # _manuscript/, _freeze/, _supplementary/
 ```
 
 After Step 3, the directory also contains `_extensions/kapsner/authors-block/` (created by `quarto add`).
@@ -47,6 +48,8 @@ author:
 date: today
 abstract: |
   <!-- TODO: Abstract — 150–250 words summarizing scope, key findings, conclusions -->
+filters:
+  - authors-block                # author affiliations extension
 bibliography: references.bib
 ---
 
@@ -110,21 +113,28 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
+    filters:
+      - scripts/abstract.lua          # moves abstract from YAML to manuscript body
+  pdf:
+    reference-doc: template.docx
+    csl: nature.csl
+    filters:
+      - scripts/abstract.lua
+    cite-method: citeproc
 execute:
   freeze: false
 bibliography: references.bib
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-Then runs `quarto add kapsner/authors-block` to install extension.
+Then:
+- Runs `quarto add kapsner/authors-block` to install extension
+- Adds `filters: [authors-block]` to `index.qmd` frontmatter (not in `_quarto.yml`, to keep the filter scoped to the article, not the project config)
 
 ---
 
 ## Step 4: Pre-flight Check
 
-- ✅ `.gitignore` exists with `_manuscript/` and `_freeze/`
+- ✅ `.gitignore` exists with `_manuscript/`, `_freeze/`, and `_supplementary/`
 - ✅ `freeze: false` (editing phase)
 - ✅ `lang: en` matches Nature (English journal)
 - ✅ `cite-method: citeproc` (Nature, not in exception list)

@@ -26,7 +26,7 @@ bibliography: references.bib     # ✅ file exists
 
 **Issues found:**
 - `template.docx` and `nature.csl` are referenced but don't exist in the project directory → agent copies them from the skill's assets
-- No `filters:` section → agent adds `abstract.lua` filter
+- No `filters:` section → agent copies `abstract.lua` to `scripts/abstract.lua` and adds `scripts/abstract.lua` filter
 - No `lang:` set → agent adds `lang: en`
 
 ### Agent applies fixes:
@@ -40,12 +40,15 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
-filters: [abstract.lua]
+    filters:
+      - scripts/abstract.lua
 lang: en
 execute:
   freeze: false
 bibliography: references.bib
 ```
+
+No `authors-block` extension needed since the existing project already has proper author formatting.
 
 ## Researcher's `index.qmd`:
 
@@ -179,7 +182,7 @@ quarto render
 **Agent:** *"Your project is now set up correctly and rendered. Issues I fixed:*
 
 - *Added missing template.docx and nature.csl to project root*
-- *Added abstract.lua filter to _quarto.yml*
+- *Created scripts/ directory and added scripts/abstract.lua filter to _quarto.yml*
 - *Added `lang: en` to _quarto.yml*
 - *Found and added DOI for Liu 2022 to references.bib*
 

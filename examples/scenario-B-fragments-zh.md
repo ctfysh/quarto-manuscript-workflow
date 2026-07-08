@@ -148,15 +148,19 @@ format:
   docx:
     reference-doc: template.docx
     csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua          # 将摘要从 YAML 移至正文
+  pdf:
+    reference-doc: template.docx
+    csl: environmental-science-and-technology.csl
+    filters:
+      - scripts/abstract.lua
+    cite-method: natbib
 
 execute:
   freeze: false
 
 bibliography: references.bib
-
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-> **注意：** `authors-block` 扩展需要先运行 `quarto add kapsner/authors-block` 才能渲染。`abstract.lua` 是一个自定义 Lua 过滤器，它将 YAML 前置内容中的摘要移入正文。
+> **注意：** `authors-block` 扩展需要先运行 `quarto add kapsner/authors-block` 才能渲染，且 `filters: [authors-block]` 必须放在 `index.qmd` frontmatter 中（不在 `_quarto.yml` 中，避免泄漏到 SI 渲染）。`abstract.lua` 是一个自定义 Lua 过滤器，它将 YAML 前置内容中的摘要移入正文。

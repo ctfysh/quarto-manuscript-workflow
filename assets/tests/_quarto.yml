@@ -1,0 +1,12 @@
+project:
+  type: default
+  output-dir: _test_output
+
+crossref:
+  eq-title: "Equation S"
+
+format:
+  docx: default
+
+execute:
+  freeze: false

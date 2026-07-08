@@ -4,14 +4,12 @@ local List = require("pandoc.List")
 local utils = require("pandoc.utils")
 local stringify = utils.stringify
 
-local Abstract = nil
 local function create_abstract(ab)
     Abstract = {}
     table.insert(Abstract, pandoc.Header(1, "Abstract"))
     table.insert(Abstract, pandoc.Para(utils.stringify(ab)))  -- utils.stringify is added
 end
 
-local Keywords = nil
 local function create_keyword_list(kw)
     Keywords = {}
     local kws = pandoc.List({})

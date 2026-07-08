@@ -21,58 +21,27 @@ This skill sits between the researcher and Quarto. The researcher provides mater
 - **Quarto ≥1.3**. Run `quarto --version`.
 - **LaTeX** for PDF output (`quarto install tinytex`)
 - **authors-block extension** for author affiliations. Install with `quarto add kapsner/authors-block`.
-- **lxml** (Python) for SI DOCX post-processing (`pip install lxml`), only if SI is needed.
+- **Python 3** (stdlib) for SI DOCX post-processing (uses `xml.etree.ElementTree` — no extra packages), only if SI is needed.
 
 ## Workflow (adaptive)
 
 Agent auto-selects flow based on what the researcher provides:
 
-### Scenario A: Ideas only, no materials
+### Adaptive scenarios
 
-```
-Researcher: "I want to write a review on microplastics in aquatic ecosystems"
-→ Agent: structured interview (title? journal? IMRaD?)
-→ Scaffold full project (all TODO blocks) → apply template → Render → deliver
-```
+| Input | Strategy |
+|-------|----------|
+| **Ideas only** | 2-question interview (title? journal?) → scaffold with TODOs → render |
+| **Fragments** (notes, PPT, emails) | Classify → IMRaD assemble (`<!-- FUZZY -->`) → coverage report → render |
+| **Word/Markdown draft** | Parse styles → extract figures/citations → generate bib from DOIs → IMRaD check → render |
+| **Complete manuscript** | Identify journal → apply template → render |
+| **Existing project** | Verify config → check cross-refs → re-render |
+| **SI setup** | Add SI to existing project → create si.qmd, _quarto-si.yml, render wrapper → render |
+| **Revision request** | Read reviewer comments → edit manuscript → pre-flight → render → deliver with change log |
 
-No detail questions. Title + journal only, everything else as TODO.
+All variants: missing content → `<!-- TODO -->` block, never block on gaps. Batch all questions into one structured gap report.
 
-### Scenario B: Fragments (notes, PPT slides, emails, chat messages)
-
-Agent strategy: puzzle assembly.
-
-1. **Classify** each fragment → Introduction / Methods / Results / Discussion / Unknown
-2. **Infer** IMRaD placement from context, mark uncertain with `<!-- FUZZY -->`
-3. **Assemble** into .qmd in IMRaD order
-4. **Coverage report**: ✅ Intro ✅ Methods ❌ Results ⚠️ Discussion ❌ Abstract. Present all gaps at once, batch questions.
-
-### Scenario C: Word draft / Markdown files
-
-1. **Word → .qmd**: parse Word styles (Heading 1/2/3 → `## {#sec-xxx}`), extract figures, identify citations
-2. **Markdown adaptation**: `[[wikilink]]` → `@fig-label`, `#tag` → keywords, Notion tables → pipe tables
-3. **Figures**: ensure `figures/` directory exists, then copy figures from Word/attachments into it
-4. **Citations**: generate bib entries from DOIs
-5. **Frontmatter**: generate YAML (title, authors, abstract, keywords)
-6. **IMRaD check**: flag missing sections
-7. **Apply template** → Render → deliver
-
-### Scenario D: Complete manuscript (already written)
-
-```
-Researcher: "Here's my draft, submit to Nature"
-→ Agent: apply Nature template → Render → deliver
-```
-
-Skip assembly and gap analysis. Just identify journal, apply template, render.
-
-### Scenario E: Existing Quarto project
-
-```
-Researcher: "Check if this Quarto project is formatted correctly"
-→ Agent: verify `_quarto.yml` → check cross-references → re-render → deliver
-```
-
-Content untouched, format QA only.
+Example walkthroughs for all variants are in [`examples/`](examples/).
 
 ---
 
@@ -97,16 +66,14 @@ Content untouched, format QA only.
 
 ## Language normalization
 
-After assembling or parsing user content and before template application, normalize all manuscript prose to match the target journal's language:
+Before template application, normalize prose to match target journal's language:
 
-1. **Detect** language of each prose block (paragraphs, captions, section titles, table cells)
-2. **Translate** any block that does not match the target language to the target language (e.g., Chinese notes → English for an English-language journal)
-3. **Preserve** as-is: technical terms, citation keys (`[@key]`), DOIs, URLs, code, equations, LaTeX math, reference labels (`@fig-`, `@sec-`)
-4. **Keep** `<!-- TODO -->` and `<!-- FUZZY -->` markers in English regardless of target language
-5. **Mark uncertain** translations with `<!-- LANG-CHECK: original text -->`. Do not silently guess.
-6. **Figure captions and table headers**: always normalize to target language
+1. **Detect** language per block; translate non-matching blocks. Preserve: citation keys, DOIs, URLs, code, equations, labels.
+2. **Keep** `<!-- TODO -->` / `<!-- FUZZY -->` markers in English.
+3. **Mark uncertain** translations with `<!-- LANG-CHECK: original -->`. Do not silently guess.
+4. **Figure captions + table headers**: always normalize to target language.
 
-Applies to Scenario B (fragments → assembly), Scenario C (Word/Markdown → .qmd), and Scenario D (complete manuscript with mixed-language content). Scenario A (ideas only) and E (existing project) produce content in the target language from the start.
+Applies to scenarios producing new content (B/C). Scenarios A/D/E work with existing content in target language.
 
 ## Template Application
 
@@ -114,9 +81,10 @@ Researcher only says which journal. Agent handles everything:
 
 1. **Look up** the journal → identify CSL file, `cite-method`, and target language
 2. **Note language**: all current journals are English (`lang: en`); if adding a non-English journal the language must be set explicitly
-3. **Copy** `assets/template.docx` + the matching `*.csl` + `assets/abstract.lua` to the project (`abstract.lua` → `scripts/abstract.lua`)
-4. **If CSL not bundled**: download from [CSL style repository](https://github.com/citation-style-language/styles) or [Zotero style search](https://www.zotero.org/styles)
-5. **Generate config** depending on context:
+3. **Copy** `assets/template.docx` + the matching `*.csl` from `journal-templates/` + `assets/scripts/abstract.lua` to the project (`abstract.lua` → `scripts/abstract.lua`)
+4. **Create** `scripts/` and `figures/` directories.
+5. **If CSL not bundled**: download from [CSL style repository](https://github.com/citation-style-language/styles) or [Zotero style search](https://www.zotero.org/styles)
+6. **Generate config** depending on context:
 
    **New project**. Write complete `_quarto.yml`:
     ```yaml
@@ -131,17 +99,20 @@ Researcher only says which journal. Agent handles everything:
         csl: <journal>.csl
         filters:
           - scripts/abstract.lua
-          - authors-block
       pdf:
+        reference-doc: template.docx
         csl: <journal>.csl
+        filters:
+          - scripts/abstract.lua
         cite-method: citeproc       # or natbib
     execute:
       freeze: false                 # toggle to true for final render
     bibliography: references.bib
     ```
-   Then ensure `quarto add kapsner/authors-block` has been run to install the third-party author affiliation extension.
-   Create `scripts/` and `figures/` directories.
-   Create `.gitignore` with `_manuscript/`, `_freeze/`, `_supplementary/`, `.DS_Store`, `__pycache__/`, `.omo/` (refer to `assets/_gitignore` for the full template).
+   Then:
+   - Ensure `quarto add kapsner/authors-block` has been run to install the third-party author affiliation extension.
+   - Add `authors-block` to `index.qmd` frontmatter (not in `_quarto.yml` — metadata (authors, abstract, keywords) must live in `index.qmd` frontmatter to avoid leaking into SI rendering).
+   Create `.gitignore` with `_manuscript/`, `_freeze/`, `_supplementary/`, `.DS_Store`, `__pycache__/`, `*.pyc`, `.omo/`.
 
    **Switching journals**. Write `_quarto-journal.yml` with only format overrides:
     ```yaml
@@ -150,25 +121,16 @@ Researcher only says which journal. Agent handles everything:
         csl: <journal>.csl
         filters:
           - scripts/abstract.lua
-          - authors-block
       pdf:
         csl: <journal>.csl
+        filters:
+          - scripts/abstract.lua
         cite-method: citeproc       # or natbib
     ```
-    (Quarto merges `_quarto-journal.yml` into `_quarto.yml` automatically.)
+    (Quarto merges `_quarto-journal.yml` into `_quarto.yml` automatically. `authors-block` must still be in `index.qmd` frontmatter.)
 
-6. **Notify** researcher of template applied
-7. **Optionally offer SI setup**: If the researcher mentions Supporting Information, see the [Supporting Information](#supporting-information-si) section.
-8. **Pre-flight check** before render:
-   - ✅ `.gitignore` exists with `_manuscript/` and `_freeze/` and `_supplementary/`
-   - ✅ `freeze:` matches phase (`false` during editing, `true` for final)
-   - ✅ `lang:` matches journal language (all current journals → `en`)
-   - ✅ `cite-method` matches journal (default `citeproc`; ACS/ES&T → `natbib`)
-   - ✅ CSL + reference-doc are from the same journal
-   - ✅ Manuscript body language matches `lang:`. Auto-fix detected mismatches, mark uncertain segments with `<!-- LANG-CHECK -->`
-   - ✅ **If SI exists**: `_quarto-si.yml` has `project.type: default` (not `manuscript`), and `crossref` config present
-   - ✅ **If SI exists**: SI equation numbers post-processed via `fix-si-numbering.py`
-   - ✅ **If SI exists**: Cross-references between main and SI use plain text, not `@fig-`
+7. **Notify** researcher of template applied
+8. **Optionally offer SI setup**: If the researcher mentions Supporting Information, see the [Supporting Information](#supporting-information-si) section.
 
 ### Customization entry points
 
@@ -184,11 +146,11 @@ Many journals require a separate Supporting Information (aka Supplementary Mater
 ### Architecture: dual-file independent render
 
 ```
-index.qmd → quarto render              → _manuscript/index.docx     (Figure 1, Table 1)
-si.qmd    → quarto render --profile si → _supplementary/si.docx     (Figure S1, Table S1)
+index.qmd → quarto render                     → _manuscript/index.docx     (Figure 1, Table 1)
+si.qmd    → _supplementary/ + quarto render   → _supplementary/si.docx     (Figure S1, Table S1)
 ```
 
-Each file is rendered independently with its own config. SI uses a **Quarto profile** to bypass the `project.type: manuscript` constraint (see below).
+Each file is rendered independently. The SI is rendered as a **standalone Quarto project** in the `_supplementary/` subdirectory, bypassing the `project.type: manuscript` constraint that prevents multi-article output.
 
 ### Step 1: Create `si.qmd`
 
@@ -221,23 +183,21 @@ $$ y = \alpha + \beta x + \epsilon $$ {#eq-supplement}
 :::
 ```
 
-### Step 2: Create the SI profile (`_quarto-si.yml`)
+### Step 2: Create the SI project config (`_quarto-si.yml`)
 
-Quarto `project.type: manuscript` only renders the QMD referenced in `manuscript: article:`. Other QMDs in the project root are ignored. The **profile mechanism** is the workaround.
+Quarto `project.type: manuscript` only renders the QMD referenced in `manuscript: article:`. Other QMDs in the project root are ignored. The solution: render `si.qmd` as a **standalone project** in `_supplementary/`, using `_quarto-si.yml` as the template.
 
 Write `_quarto-si.yml` at project root. Match the CSL to the main manuscript's journal:
 
 ```yaml
 project:
   type: default
-  output-dir: _supplementary
 
 title: "Supporting Information"
 
-# Clear metadata inherited from _quarto.yml
-authors: []
-abstract: ""
-keywords: []
+# Document metadata (title, authors, abstract, keywords) lives in
+# index.qmd frontmatter, NOT in _quarto.yml. The SI project's
+# _quarto.yml only needs crossref and format settings.
 
 crossref:
   fig-title: "Figure S"
@@ -248,16 +208,18 @@ format:
   docx:
     reference-doc: template.docx
     csl: <journal>.csl               # Same CSL as main manuscript
+    filters:
+      - scripts/abstract.lua         # Shared with main — harmless when abstract is absent
 
 bibliography: references.bib
 ```
 
+The render script uses this file as a template, stripping `output-dir:` and conditionally omitting `bibliography`/`csl` when `si.qmd` contains no citations.
+
 **Key rules:**
-- Profile file must be at project root, named `_quarto-{name}.yml`
-- Render with `quarto render --profile si`
-- Always set `project: type: default` (not `manuscript`) to avoid the article-only constraint
-- Always clear `authors`, `abstract`, `keywords` (to override inherited main-manuscript metadata)
-- `crossref` config goes in the profile (not the QMD) — both `index.qmd` and `si.qmd` are pure markdown
+- `project: type: default` (not `manuscript`) — avoids the article-only constraint
+- **Metadata goes in `index.qmd` frontmatter**, not in `_quarto.yml`
+- `crossref` config goes in the project config (not the QMD) — both `index.qmd` and `si.qmd` are pure markdown
 
 ### Step 3: S-prefix numbering
 
@@ -285,65 +247,38 @@ Supplementary Figure S1 shows the experimental data (see [Supplementary Figure S
 
 This produces clean readable text in DOCX while maintaining a clickable link in HTML/PDF.
 
+**Pre-flight**: verify every plain-text SI ref in `index.qmd` ("Supplementary Figure S1", "Supplementary Table S1") has a matching `{#fig-...}` / `{#tbl-...}` label in `si.qmd`. No automated check — agent must verify manually.
+
 ### Step 5: Equation numbering — post-processing required
 
 `eq-title: "Equation S"` changes the *label text* (e.g., "Equation 1" → "Equation S1") but does **not** change the equation number itself `(1)` → `(S1)`. In DOCX, equation numbers are stored in OOXML `<m:t>` elements under the math namespace, outside Pandoc's AST reach.
 
-**Solution**: Post-process the rendered DOCX with a Python script using `lxml`. A reusable template is bundled at `assets/scripts/fix-si-numbering.py` in this skill (reference when writing, or copy directly from the skill directory):
+**Solution**: Post-process the rendered DOCX with `assets/scripts/fix-si-numbering.py` (stdlib only — `xml.etree.ElementTree`, no extra packages). Copy to `scripts/`:
 
 ```bash
-# Create scripts/ directory first (if not already created)
-mkdir -p scripts
-# Write scripts/fix-si-numbering.py using the content below (or copy from skill assets)
+cp <skill-assets>/assets/scripts/fix-si-numbering.py scripts/
 ```
 
-The script handles two fixes:
-
-```python
-# fix-si-numbering.py key logic (full script at assets/scripts/fix-si-numbering.py):
-
-# 1. Caption numbering: inject "S " into SEQ field codes
-#    "SEQ Figure \\* ARABIC" → "SEQ Figure S \\* ARABIC" → Figure S1
-for instr in doc.iter("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}instrText"):
-    if " SEQ Figure " in instr.text:
-        instr.text = instr.text.replace(" SEQ Figure ", " SEQ Figure S ")
-    # similar for " SEQ Table "
-
-# 2. Equation numbers: inject "S" into OMath <m:t> elements
-#    "(1)" → "(S1)"
-for t in doc.iter("{http://schemas.openxmlformats.org/officeDocument/2006/math}t"):
-    if t.text and t.text.strip().startswith("(") and t.text.strip().endswith(")"):
-        num = t.text.strip()[1:-1]
-        if num.isdigit():
-            t.text = t.text.replace(f"({num})", f"(S{num})")
-```
-
-**Caption NBSP handling**: When `fig-title: "Figure S"` is used, Quarto may insert a non-breaking space between the title prefix and the auto-number. The script above handles this by injecting "S " between "SEQ Figure" and the sequence number in the DOCX field codes.
+The script uses a pattern registry (`PATTERNS` list). New patterns are added as functions and registered when Pandoc's OMML output changes. The script tries each pattern and uses the first match.
 
 ### Step 6: One-command render wrapper
 
-Bundle the render + post-process into `scripts/render-si.sh`. Use a robust pattern that resolves paths relative to the script's own location:
+Bundle render + post-process into `scripts/render-si.sh`:
 
 ```bash
-#!/usr/bin/env bash
-# render-si.sh — One-command SI render: profile render + post-processing
-set -euo pipefail
-
-quarto render --profile si
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-python "${SCRIPT_DIR}/fix-si-numbering.py" _supplementary/si.docx
-
-echo "Done: _supplementary/si.docx"
+cp <skill-assets>/assets/scripts/render-si.sh scripts/
+chmod +x scripts/render-si.sh
 ```
+
+The script creates a standalone project in `_supplementary/` (avoids OMML bug from `--profile si` with `project.type: manuscript`), copies shared assets, renders, and runs the equation fix. See `assets/scripts/render-si.sh` for the full implementation. After setup, render the SI with: `bash scripts/render-si.sh`
 
 ### File structure after SI setup
 
 ```
 project/
 ├── _quarto.yml            # Main manuscript config (project.type: manuscript)
-├── _quarto-si.yml         # SI profile (project.type: default)
-├── index.qmd              # Pure markdown, no frontmatter
+├── _quarto-si.yml         # SI project config template (project.type: default)
+├── index.qmd              # YAML frontmatter: title, authors, abstract, keywords, filters (authors-block)
 ├── si.qmd                 # Pure markdown, no frontmatter
 ├── scripts/
 │   ├── abstract.lua       # Pandoc Lua filter (moves YAML abstract→body)
@@ -357,48 +292,49 @@ project/
 
 ### SI best practices
 
-- **Keep QMDs clean**: Both `index.qmd` and `si.qmd` should be pure markdown. All config in YAML files.
-- **Profile naming**: `_quarto-si.yml` is conventional. Use `_quarto-supplementary.yml` if preferred.
-- **References**: SI can share `references.bib` or have its own. If sharing, only cited entries appear.
-- **Figures**: Put SI-specific figures in `figures/` alongside main figures. Filenames don't need SI prefix — labels handle that.
-- **Equation post-processing is DOCX-only**: For PDF output, LaTeX handles `\tag{S1}` natively in the equation environment.
-- **Lua filters cannot fix this**: Pandoc Lua filters operate on the AST, which does not contain DOCX field codes or OMath elements. DOCX-specific issues require OOXML-level post-processing.
+- **`si.qmd`**: pure markdown. Metadata lives in `index.qmd` frontmatter only.
+- **Config naming**: `_quarto-si.yml` is conventional. Use `_quarto-supplementary.yml` if preferred.
+- **References**: Share `references.bib` with main, or use separate file. Only cited entries appear.
+- **Figures**: Put SI figures in `figures/` alongside main figures. No prefix needed — labels handle S-prefix.
+- **DOCX-only**: Equation post-processing is DOCX-only. For PDF, LaTeX handles `\tag{S1}` natively.
+- **Test after upgrade**: `bash assets/tests/test-render.sh` (run from the skill repository root, not from the user project) to verify `fix-si-numbering.py` with current Pandoc.
 
-## Iteration Loop
+## Render & Pre-flight
 
-Researcher request → agent edit → `quarto render` → deliver new .docx:
+```bash
+quarto render                    # main manuscript
+bash scripts/render-si.sh        # SI (if exists)
+```
 
-- "Replace Figure 2 with a new image" → replace file, update caption → render
-- "Move Methods after Results" → reorder sections → render
-- "Add Smith 2023 citation" → find DOI → add bib entry → insert cite → render
+### Pre-flight checklist
 
-## Render QA Checklist
+- [ ] `.gitignore` covers `_manuscript/`, `_freeze/`, `_supplementary/`
+- [ ] `freeze:` matches phase (`false` editing, `true` final)
+- [ ] `lang:` matches journal (all current → `en`)
+- [ ] `cite-method` matches journal (PDF only; default `citeproc`; ACS/ES&T → `natbib`). DOCX always uses `citeproc`.
+- [ ] CSL + reference-doc from same journal
+- [ ] Body language matches `lang:`; mark uncertain segments with `<!-- LANG-CHECK: original -->`
+- [ ] Every `[@key]` has matching `references.bib` entry
+- [ ] Every `@fig-`/`@tbl-`/`@eq-`/`@sec-` label is unique
+- [ ] No `TODO`/`FIXME`/`XXX` remain (unless acknowledged)
+- [ ] All figure paths resolve
+- [ ] **If SI exists**: `_quarto-si.yml` `project.type` is `default`, `crossref` present
+- [ ] **If SI exists**: `bash scripts/render-si.sh` runs without error
+- [ ] **If SI exists**: equation numbers show `(S1)` not `(1)`
+- [ ] **If SI exists**: cross-refs between main and SI use plain text, not `@fig-`
+- [ ] **If SI exists**: every plain-text SI ref in `index.qmd` (e.g. "Supplementary Figure S1") has a matching label `{#fig-...}` in `si.qmd`
 
-Run before final delivery:
-
-- [ ] Every `[@key]` has matching entry in `references.bib`
-- [ ] Every `@fig-`, `@tbl-`, `@eq-`, `@sec-` label is unique
-- [ ] No `TODO` / `FIXME` / `XXX` placeholders remain (unless acknowledged)
-- [ ] `freeze` set correctly (`false` for editing, `true` for final)
-- [ ] All figure paths resolve to existing files
-- [ ] **If SI exists**: `_quarto-si.yml` `project.type` is `default` (not `manuscript`)
-- [ ] **If SI exists**: `scripts/render-si.sh` renders without error
-- [ ] **If SI exists**: Equation numbers in SI show `(S1)` not `(1)` (run post-process)
-
-## Submission Readiness
+### Submission readiness
 
 - [ ] File naming matches journal requirements
 - [ ] Figure resolution ≥300 DPI
 - [ ] Word/page count within journal limits
-- [ ] SI rendered as independent file via profile (`quarto render --profile si`)
-- [ ] SI equation numbers show "S" prefix (`(S1)` not `(1)`)
-- [ ] Cross-references between main and SI use plain text (not `@fig-` which renders as "Figure 1" in DOCX)
 - [ ] Required sections present (data availability, author contributions, etc.)
 - [ ] CSL matches target journal (verify citation format in .docx)
 
 ## Journal Template Index
 
-All 22 CSL files in `journal-templates/` use `cite-method: citeproc` and target language `lang: en`. Exceptions:
+20 of the 22 CSL files in `journal-templates/` use `cite-method: citeproc` and target language `lang: en`. Two exceptions require `cite-method: natbib`:
 
 | Field | Exception |
 |-------|-----------|

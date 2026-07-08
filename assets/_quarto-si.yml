@@ -1,13 +1,11 @@
 project:
   type: default
-  output-dir: _supplementary
 
 title: "Supporting Information"
 
-# Clear metadata inherited from _quarto.yml
-authors: []
-abstract: ""
-keywords: []
+# Note: Document metadata (authors, abstract, keywords) belongs in
+# index.qmd frontmatter, NOT in _quarto.yml. The SI project's _quarto.yml
+# only needs crossref and format settings. See SKILL.md §"Metadata placement".
 
 crossref:
   fig-title: "Figure S"
@@ -17,6 +15,8 @@ crossref:
 format:
   docx:
     reference-doc: template.docx
-    csl: <journal>.csl               # Same CSL as main manuscript
+    csl: <journal>.csl                     # Same CSL as main manuscript
+    filters:
+      - scripts/abstract.lua         # Shared with main — harmless when abstract is absent
 
 bibliography: references.bib

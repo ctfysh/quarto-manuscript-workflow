@@ -1,0 +1,8 @@
+---
+title: "No equations"
+format: docx
+---
+
+## Introduction
+
+This document has no equations at all.

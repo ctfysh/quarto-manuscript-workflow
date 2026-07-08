@@ -25,10 +25,11 @@ microplastics-review/
 ├── index.qmd                # 稿件正文，空缺处插 TODO
 ├── references.bib           # 空文件，后续添加文献
 ├── figures/                 # 空目录，后续添加图片
+├── scripts/
+│   └── abstract.lua         # 从 skill assets 复制
 ├── template.docx            # 从 skill assets 复制
 ├── nature.csl               # 从 skill journal-templates/ 复制
-├── abstract.lua             # 从 skill assets 复制
-└── .gitignore               # _manuscript/, _freeze/
+└── .gitignore               # _manuscript/, _freeze/, _supplementary/
 ```
 
 第 3 步安装 `authors-block` 扩展后，目录还会包含 `_extensions/kapsner/authors-block/`。
@@ -47,6 +48,8 @@ author:
 date: today
 abstract: |
   <!-- TODO: 摘要 — 150–250 字，概述范围、主要发现和结论 -->
+filters:
+  - authors-block                # 作者单位扩展
 bibliography: references.bib
 ---
 
@@ -110,21 +113,28 @@ format:
   docx:
     reference-doc: template.docx
     csl: nature.csl
+    filters:
+      - scripts/abstract.lua          # 将摘要从 YAML 移至正文
+  pdf:
+    reference-doc: template.docx
+    csl: nature.csl
+    filters:
+      - scripts/abstract.lua
+    cite-method: citeproc
 execute:
   freeze: false
 bibliography: references.bib
-filters:
-  - abstract.lua
-  - authors-block
 ```
 
-然后运行 `quarto add kapsner/authors-block` 安装第三方扩展。
+然后：
+- 运行 `quarto add kapsner/authors-block` 安装第三方扩展
+- 在 `index.qmd` frontmatter 中添加 `filters: [authors-block]`（不在 `_quarto.yml` 中，将 filter 限定在文章范围内，而非项目配置）
 
 ---
 
 ## 第 4 步：起飞前检查
 
-- ✅ `.gitignore` 已包含 `_manuscript/` 和 `_freeze/`
+- ✅ `.gitignore` 已包含 `_manuscript/`、`_freeze/` 和 `_supplementary/`
 - ✅ `freeze: false`（编辑阶段）
 - ✅ `lang: en` 匹配 Nature（英文期刊）
 - ✅ `cite-method: citeproc`（Nature，不在例外列表）
