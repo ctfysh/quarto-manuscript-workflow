@@ -17,6 +17,6 @@ crossref:
 format:
   docx:
     reference-doc: template.docx
-    csl: american-chemical-society.csl
+    csl: <journal>.csl               # Same CSL as main manuscript
 
 bibliography: references.bib

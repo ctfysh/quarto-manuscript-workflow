@@ -1,0 +1,14 @@
+# Quarto output
+_manuscript/
+_freeze/
+_supplementary/
+
+# macOS
+.DS_Store
+
+# Agent planning artifacts
+.omo/
+
+# Python
+__pycache__/
+*.pyc

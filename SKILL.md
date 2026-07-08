@@ -20,6 +20,8 @@ This skill sits between the researcher and Quarto. The researcher provides mater
 
 - **Quarto ≥1.3**. Run `quarto --version`.
 - **LaTeX** for PDF output (`quarto install tinytex`)
+- **authors-block extension** for author affiliations. Install with `quarto add kapsner/authors-block`.
+- **lxml** (Python) for SI DOCX post-processing (`pip install lxml`), only if SI is needed.
 
 ## Workflow (adaptive)
 
@@ -112,11 +114,11 @@ Researcher only says which journal. Agent handles everything:
 
 1. **Look up** the journal → identify CSL file, `cite-method`, and target language
 2. **Note language**: all current journals are English (`lang: en`); if adding a non-English journal the language must be set explicitly
-3. **Copy** `assets/template.docx` + the matching `*.csl` to project root
+3. **Copy** `assets/template.docx` + the matching `*.csl` + `assets/abstract.lua` to the project (`abstract.lua` → `scripts/abstract.lua`)
 4. **If CSL not bundled**: download from [CSL style repository](https://github.com/citation-style-language/styles) or [Zotero style search](https://www.zotero.org/styles)
 5. **Generate config** depending on context:
 
-   **New project**. Write complete `_quarto.yml` and install extensions:
+   **New project**. Write complete `_quarto.yml`:
     ```yaml
     project:
       type: manuscript
@@ -127,39 +129,46 @@ Researcher only says which journal. Agent handles everything:
       docx:
         reference-doc: template.docx
         csl: <journal>.csl
+        filters:
+          - scripts/abstract.lua
+          - authors-block
       pdf:
         csl: <journal>.csl
         cite-method: citeproc       # or natbib
     execute:
       freeze: false                 # toggle to true for final render
     bibliography: references.bib
-    filters:
-      - abstract.lua
-      - authors-block
     ```
-   Then run `quarto add kapsner/authors-block` to install the third-party author affiliation extension.
-   Create `figures/` directory (empty, for figures to be added).
+   Then ensure `quarto add kapsner/authors-block` has been run to install the third-party author affiliation extension.
+   Create `scripts/` and `figures/` directories.
+   Create `.gitignore` with `_manuscript/`, `_freeze/`, `_supplementary/`, `.DS_Store`, `__pycache__/`, `.omo/` (refer to `assets/_gitignore` for the full template).
 
    **Switching journals**. Write `_quarto-journal.yml` with only format overrides:
-   ```yaml
-   format:
-     docx:
-       csl: <journal>.csl
-     pdf:
-       csl: <journal>.csl
-       cite-method: citeproc       # or natbib
-   ```
-   (Quarto merges `_quarto-journal.yml` into `_quarto.yml` automatically.)
+    ```yaml
+    format:
+      docx:
+        csl: <journal>.csl
+        filters:
+          - scripts/abstract.lua
+          - authors-block
+      pdf:
+        csl: <journal>.csl
+        cite-method: citeproc       # or natbib
+    ```
+    (Quarto merges `_quarto-journal.yml` into `_quarto.yml` automatically.)
 
 6. **Notify** researcher of template applied
 7. **Optionally offer SI setup**: If the researcher mentions Supporting Information, see the [Supporting Information](#supporting-information-si) section.
 8. **Pre-flight check** before render:
-   - ✅ `.gitignore` exists with `_manuscript/` and `_freeze/`
+   - ✅ `.gitignore` exists with `_manuscript/` and `_freeze/` and `_supplementary/`
    - ✅ `freeze:` matches phase (`false` during editing, `true` for final)
    - ✅ `lang:` matches journal language (all current journals → `en`)
    - ✅ `cite-method` matches journal (default `citeproc`; ACS/ES&T → `natbib`)
    - ✅ CSL + reference-doc are from the same journal
    - ✅ Manuscript body language matches `lang:`. Auto-fix detected mismatches, mark uncertain segments with `<!-- LANG-CHECK -->`
+   - ✅ **If SI exists**: `_quarto-si.yml` has `project.type: default` (not `manuscript`), and `crossref` config present
+   - ✅ **If SI exists**: SI equation numbers post-processed via `fix-si-numbering.py`
+   - ✅ **If SI exists**: Cross-references between main and SI use plain text, not `@fig-`
 
 ### Customization entry points
 
@@ -214,15 +223,9 @@ $$ y = \alpha + \beta x + \epsilon $$ {#eq-supplement}
 
 ### Step 2: Create the SI profile (`_quarto-si.yml`)
 
-Quarto `project.type: manuscript` only renders the QMD referenced in `manuscript: article:`. Other QMDs in the project root are ignored. The **profile mechanism** is the workaround:
+Quarto `project.type: manuscript` only renders the QMD referenced in `manuscript: article:`. Other QMDs in the project root are ignored. The **profile mechanism** is the workaround.
 
-Copy the template from `assets/_quarto-si.yml` into the project root:
-
-```bash
-cp _extensions/quarto-manuscript-workflow/assets/_quarto-si.yml _quarto-si.yml
-```
-
-Template content:
+Write `_quarto-si.yml` at project root. Match the CSL to the main manuscript's journal:
 
 ```yaml
 project:
@@ -244,7 +247,7 @@ crossref:
 format:
   docx:
     reference-doc: template.docx
-    csl: american-chemical-society.csl
+    csl: <journal>.csl               # Same CSL as main manuscript
 
 bibliography: references.bib
 ```
@@ -286,12 +289,12 @@ This produces clean readable text in DOCX while maintaining a clickable link in 
 
 `eq-title: "Equation S"` changes the *label text* (e.g., "Equation 1" → "Equation S1") but does **not** change the equation number itself `(1)` → `(S1)`. In DOCX, equation numbers are stored in OOXML `<m:t>` elements under the math namespace, outside Pandoc's AST reach.
 
-**Solution**: Post-process the rendered DOCX with a Python script using `lxml`. A reusable template is bundled at `assets/scripts/fix-si-numbering.py` in this skill. Copy it into the project:
+**Solution**: Post-process the rendered DOCX with a Python script using `lxml`. A reusable template is bundled at `assets/scripts/fix-si-numbering.py` in this skill (reference when writing, or copy directly from the skill directory):
 
 ```bash
-cp _extensions/quarto-manuscript-workflow/assets/scripts/fix-si-numbering.py scripts/
-# Or directly from the skill source:
-# cp /path/to/skill/assets/scripts/fix-si-numbering.py scripts/
+# Create scripts/ directory first (if not already created)
+mkdir -p scripts
+# Write scripts/fix-si-numbering.py using the content below (or copy from skill assets)
 ```
 
 The script handles two fixes:
@@ -319,21 +322,19 @@ for t in doc.iter("{http://schemas.openxmlformats.org/officeDocument/2006/math}t
 
 ### Step 6: One-command render wrapper
 
-Bundle the render + post-process into `scripts/render-si.sh`. A template is at `assets/scripts/render-si.sh`:
+Bundle the render + post-process into `scripts/render-si.sh`. Use a robust pattern that resolves paths relative to the script's own location:
 
 ```bash
 #!/usr/bin/env bash
+# render-si.sh — One-command SI render: profile render + post-processing
 set -euo pipefail
+
 quarto render --profile si
-python scripts/fix-si-numbering.py _supplementary/si.docx
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+python "${SCRIPT_DIR}/fix-si-numbering.py" _supplementary/si.docx
+
 echo "Done: _supplementary/si.docx"
-```
-
-Copy it from the skill assets:
-
-```bash
-cp _extensions/quarto-manuscript-workflow/assets/scripts/render-si.sh scripts/
-chmod +x scripts/render-si.sh
 ```
 
 ### File structure after SI setup
