@@ -39,6 +39,36 @@ Agent auto-selects flow based on what the researcher provides:
 | **SI setup** | Add SI to existing project → create si.qmd, _quarto-si.yml, render wrapper → render |
 | **Revision request** | Read reviewer comments → edit manuscript → pre-flight → render → deliver with change log |
 
+### Scenario classification logic
+
+Use this decision tree to classify the input:
+
+```
+1. Does the researcher mention reviewer comments / revision / "大修" / "小修"?
+   → YES → Scenario G (Revision)
+   → NO ↓
+
+2. Is there an existing Quarto project (index.qmd + _quarto.yml on disk)?
+   → YES → Scenario E (Existing project)
+   → NO ↓
+
+3. Does the researcher have a complete Word/Markdown draft (≥80% sections present)?
+   → YES → Scenario C (Word/Markdown draft)
+   → NO ↓
+
+4. Does the researcher have a final manuscript that just needs formatting?
+   → YES → Scenario D (Complete manuscript)
+   → NO ↓
+
+5. Does the researcher want Supporting Information added?
+   → YES → Scenario F (SI setup)
+   → NO ↓
+
+6. Does the researcher have scattered materials (notes, PPT, emails, partial text)?
+   → YES → Scenario B (Fragments)
+   → NO → Scenario A (Ideas only)
+```
+
 All variants: missing content → `<!-- TODO -->` block, never block on gaps. Batch all questions into one structured gap report.
 
 🔴 **CHECKPOINT**: After detecting scenario, present classification to researcher and confirm before proceeding. Example: "I detect this is a **fragments** scenario (B). I'll assemble your notes into IMRaD structure with ES&T template. Correct?"
