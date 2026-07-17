@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+.DS_Store
+.omo/
+result-card.png
+results.tsv
+test-prompts.json

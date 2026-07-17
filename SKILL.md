@@ -39,7 +39,39 @@ Agent auto-selects flow based on what the researcher provides:
 | **SI setup** | Add SI to existing project → create si.qmd, _quarto-si.yml, render wrapper → render |
 | **Revision request** | Read reviewer comments → edit manuscript → pre-flight → render → deliver with change log |
 
+### Scenario classification logic
+
+Use this decision tree to classify the input:
+
+```
+1. Does the researcher mention reviewer comments / revision / "大修" / "小修"?
+   → YES → Scenario G (Revision)
+   → NO ↓
+
+2. Is there an existing Quarto project (index.qmd + _quarto.yml on disk)?
+   → YES → Scenario E (Existing project)
+   → NO ↓
+
+3. Does the researcher have a complete Word/Markdown draft (≥80% sections present)?
+   → YES → Scenario C (Word/Markdown draft)
+   → NO ↓
+
+4. Does the researcher have a final manuscript that just needs formatting?
+   → YES → Scenario D (Complete manuscript)
+   → NO ↓
+
+5. Does the researcher want Supporting Information added?
+   → YES → Scenario F (SI setup)
+   → NO ↓
+
+6. Does the researcher have scattered materials (notes, PPT, emails, partial text)?
+   → YES → Scenario B (Fragments)
+   → NO → Scenario A (Ideas only)
+```
+
 All variants: missing content → `<!-- TODO -->` block, never block on gaps. Batch all questions into one structured gap report.
+
+🔴 **CHECKPOINT**: After detecting scenario, present classification to researcher and confirm before proceeding. Example: "I detect this is a **fragments** scenario (B). I'll assemble your notes into IMRaD structure with ES&T template. Correct?"
 
 Example walkthroughs for all variants are in [`examples/`](examples/).
 
@@ -56,6 +88,26 @@ Example walkthroughs for all variants are in [`examples/`](examples/).
 
 - **Always renderable**. Never wait. Every gap → TODO block.
 - **Batch questions**. One structured gap report, not individual Q&A.
+- **Gap report format** — use this exact template when presenting gaps to the researcher:
+
+```markdown
+## Gap Report — [Scenario X]
+
+### 🔴 Blocking (must resolve before render)
+1. [No body text] — Please provide your draft or notes
+
+### 🟡 Fillable (agent inserts TODO, you fill later)
+1. [Discussion section] — ~800 words needed: theoretical framework, comparison with prior work, limitations
+2. [Figure 3] — Missing data file for temperature comparison plot
+3. [References] — 2 DOIs mentioned in text not in .bib: 10.1021/xxx, 10.1038/yyy
+
+### 🟢 Low priority (defaults applied)
+1. [ORCID] — Using placeholder; add yours later
+2. [Journal] — Applying ES&T template as requested
+
+**Action needed:** Resolve 🔴 items. 🟡 items will be marked `<!-- TODO -->` and you can fill them later.
+```
+
 - **Three-color severity:**
 
 | Severity | Examples | Agent Behavior |
@@ -63,6 +115,21 @@ Example walkthroughs for all variants are in [`examples/`](examples/).
 | 🔴 Blocking | No body text | Stop, ask for draft |
 | 🟡 Fillable | Missing section/figure/bib | Insert TODO → continue |
 | 🟢 Low priority | No ORCID/journal/abstract | Use defaults |
+
+## Anti-patterns (do NOT do)
+
+| # | Don't | Why | Do instead |
+|---|-------|-----|-----------|
+| 1 | **Block on missing content** | Researcher may not have all material ready | Insert `<!-- TODO: ... -->` and continue — never wait |
+| 2 | **Ask questions one at a time** | Annoying, slows workflow | Batch all gaps into one structured report |
+| 3 | **Guess uncertain translations** | Silent errors corrupt manuscript | Mark with `<!-- LANG-CHECK: original -->` |
+| 4 | **Put metadata in `_quarto.yml`** | Leaks into SI rendering | Metadata goes in `index.qmd` frontmatter only |
+| 5 | **Use `@fig-` cross-refs between main↔SI** | DOCX doesn't propagate S-prefix | Use plain text links: `[Supplementary Figure S1](#fig-extra)` |
+| 6 | **Run `quarto render` on SI with `project.type: manuscript`** | OMML bug — equation numbers break | Use `scripts/render-si.sh` (standalone project in `_supplementary/`) |
+| 7 | **Skip pre-flight checklist** | Silent config mismatches cause render failures | Always run checklist before `quarto render` |
+| 8 | **Hardcode journal-specific settings in `_quarto.yml`** | Breaks when switching journals | Use `_quarto-journal.yml` overlay for journal-specific overrides |
+
+---
 
 ## Language normalization
 
@@ -78,6 +145,8 @@ Applies to scenarios producing new content (B/C). Scenarios A/D/E work with exis
 ## Template Application
 
 Researcher only says which journal. Agent handles everything:
+
+🔴 **CHECKPOINT**: Confirm target journal before applying template. Example: "Target journal: **ES&T** (cite-method: natbib, lang: en). Applying template now."
 
 1. **Look up** the journal → identify CSL file, `cite-method`, and target language
 2. **Note language**: all current journals are English (`lang: en`); if adding a non-English journal the language must be set explicitly
@@ -301,6 +370,8 @@ project/
 
 ## Render & Pre-flight
 
+🔴 **CHECKPOINT**: Before running `quarto render`, present pre-flight summary to researcher. Example: "Pre-flight complete: ✅ CSL correct ✅ template.docx ready ✅ 3 TODOs remaining. Render now?"
+
 ```bash
 quarto render                    # main manuscript
 bash scripts/render-si.sh        # SI (if exists)
@@ -323,6 +394,18 @@ bash scripts/render-si.sh        # SI (if exists)
 - [ ] **If SI exists**: equation numbers show `(S1)` not `(1)`
 - [ ] **If SI exists**: cross-refs between main and SI use plain text, not `@fig-`
 - [ ] **If SI exists**: every plain-text SI ref in `index.qmd` (e.g. "Supplementary Figure S1") has a matching label `{#fig-...}` in `si.qmd`
+
+### Failure mode fallback
+
+| Trigger condition | First-line fix | If still fails |
+|---|---|---|
+| `quarto render` exits non-zero | Read error output: missing CSL → copy from `journal-templates/`; missing `template.docx` → copy from `assets/`; Lua filter error → check `scripts/abstract.lua` path | Ask researcher to run `quarto check` and share output |
+| CSL file not in `journal-templates/` | Download from [CSL repo](https://github.com/citation-style-language/styles) or [Zotero](https://www.zotero.org/styles); save to project root | Tell researcher: "CSL for {journal} not bundled. I downloaded {file}. Verify citation format in rendered .docx." |
+| `fix-si-numbering.py` errors (Python/XML) | Verify Python 3 available (`python3 --version`); check script has no syntax errors | Fall back to manual equation renumbering in DOCX via Word Find/Replace |
+| `render-si.sh` fails | Check `_quarto-si.yml` exists and `project.type: default`; ensure `si.qmd` is at project root | Render SI manually: `quarto render si.qmd --output-dir _supplementary` |
+| `authors-block` extension missing | Run `quarto add kapsner/authors-block` | If network fails, add authors directly in `index.qmd` YAML without the extension |
+| Cross-ref labels collide (`@fig-1` used twice) | Agent must verify labels are unique in pre-flight; rename duplicate with descriptive suffix | Re-render after fix — no silent skip |
+| `freeze: true` blocks re-rendering | Set `freeze: false` in `_quarto.yml` | If researcher wants frozen state, run `quarto render --no-freeze` |
 
 ### Submission readiness
 
