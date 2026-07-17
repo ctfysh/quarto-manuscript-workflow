@@ -41,6 +41,8 @@ Agent auto-selects flow based on what the researcher provides:
 
 All variants: missing content → `<!-- TODO -->` block, never block on gaps. Batch all questions into one structured gap report.
 
+🔴 **CHECKPOINT**: After detecting scenario, present classification to researcher and confirm before proceeding. Example: "I detect this is a **fragments** scenario (B). I'll assemble your notes into IMRaD structure with ES&T template. Correct?"
+
 Example walkthroughs for all variants are in [`examples/`](examples/).
 
 ---
@@ -64,6 +66,21 @@ Example walkthroughs for all variants are in [`examples/`](examples/).
 | 🟡 Fillable | Missing section/figure/bib | Insert TODO → continue |
 | 🟢 Low priority | No ORCID/journal/abstract | Use defaults |
 
+## Anti-patterns (do NOT do)
+
+| # | Don't | Why | Do instead |
+|---|-------|-----|-----------|
+| 1 | **Block on missing content** | Researcher may not have all material ready | Insert `<!-- TODO: ... -->` and continue — never wait |
+| 2 | **Ask questions one at a time** | Annoying, slows workflow | Batch all gaps into one structured report |
+| 3 | **Guess uncertain translations** | Silent errors corrupt manuscript | Mark with `<!-- LANG-CHECK: original -->` |
+| 4 | **Put metadata in `_quarto.yml`** | Leaks into SI rendering | Metadata goes in `index.qmd` frontmatter only |
+| 5 | **Use `@fig-` cross-refs between main↔SI** | DOCX doesn't propagate S-prefix | Use plain text links: `[Supplementary Figure S1](#fig-extra)` |
+| 6 | **Run `quarto render` on SI with `project.type: manuscript`** | OMML bug — equation numbers break | Use `scripts/render-si.sh` (standalone project in `_supplementary/`) |
+| 7 | **Skip pre-flight checklist** | Silent config mismatches cause render failures | Always run checklist before `quarto render` |
+| 8 | **Hardcode journal-specific settings in `_quarto.yml`** | Breaks when switching journals | Use `_quarto-journal.yml` overlay for journal-specific overrides |
+
+---
+
 ## Language normalization
 
 Before template application, normalize prose to match target journal's language:
@@ -78,6 +95,8 @@ Applies to scenarios producing new content (B/C). Scenarios A/D/E work with exis
 ## Template Application
 
 Researcher only says which journal. Agent handles everything:
+
+🔴 **CHECKPOINT**: Confirm target journal before applying template. Example: "Target journal: **ES&T** (cite-method: natbib, lang: en). Applying template now."
 
 1. **Look up** the journal → identify CSL file, `cite-method`, and target language
 2. **Note language**: all current journals are English (`lang: en`); if adding a non-English journal the language must be set explicitly
@@ -300,6 +319,8 @@ project/
 - **Test after upgrade**: `bash assets/tests/test-render.sh` (run from the skill repository root, not from the user project) to verify `fix-si-numbering.py` with current Pandoc.
 
 ## Render & Pre-flight
+
+🔴 **CHECKPOINT**: Before running `quarto render`, present pre-flight summary to researcher. Example: "Pre-flight complete: ✅ CSL correct ✅ template.docx ready ✅ 3 TODOs remaining. Render now?"
 
 ```bash
 quarto render                    # main manuscript
