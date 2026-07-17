@@ -345,6 +345,18 @@ bash scripts/render-si.sh        # SI (if exists)
 - [ ] **If SI exists**: cross-refs between main and SI use plain text, not `@fig-`
 - [ ] **If SI exists**: every plain-text SI ref in `index.qmd` (e.g. "Supplementary Figure S1") has a matching label `{#fig-...}` in `si.qmd`
 
+### Failure mode fallback
+
+| Trigger condition | First-line fix | If still fails |
+|---|---|---|
+| `quarto render` exits non-zero | Read error output: missing CSL → copy from `journal-templates/`; missing `template.docx` → copy from `assets/`; Lua filter error → check `scripts/abstract.lua` path | Ask researcher to run `quarto check` and share output |
+| CSL file not in `journal-templates/` | Download from [CSL repo](https://github.com/citation-style-language/styles) or [Zotero](https://www.zotero.org/styles); save to project root | Tell researcher: "CSL for {journal} not bundled. I downloaded {file}. Verify citation format in rendered .docx." |
+| `fix-si-numbering.py` errors (Python/XML) | Verify Python 3 available (`python3 --version`); check script has no syntax errors | Fall back to manual equation renumbering in DOCX via Word Find/Replace |
+| `render-si.sh` fails | Check `_quarto-si.yml` exists and `project.type: default`; ensure `si.qmd` is at project root | Render SI manually: `quarto render si.qmd --output-dir _supplementary` |
+| `authors-block` extension missing | Run `quarto add kapsner/authors-block` | If network fails, add authors directly in `index.qmd` YAML without the extension |
+| Cross-ref labels collide (`@fig-1` used twice) | Agent must verify labels are unique in pre-flight; rename duplicate with descriptive suffix | Re-render after fix — no silent skip |
+| `freeze: true` blocks re-rendering | Set `freeze: false` in `_quarto.yml` | If researcher wants frozen state, run `quarto render --no-freeze` |
+
 ### Submission readiness
 
 - [ ] File naming matches journal requirements
