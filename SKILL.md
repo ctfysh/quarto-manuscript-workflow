@@ -88,6 +88,26 @@ Example walkthroughs for all variants are in [`examples/`](examples/).
 
 - **Always renderable**. Never wait. Every gap → TODO block.
 - **Batch questions**. One structured gap report, not individual Q&A.
+- **Gap report format** — use this exact template when presenting gaps to the researcher:
+
+```markdown
+## Gap Report — [Scenario X]
+
+### 🔴 Blocking (must resolve before render)
+1. [No body text] — Please provide your draft or notes
+
+### 🟡 Fillable (agent inserts TODO, you fill later)
+1. [Discussion section] — ~800 words needed: theoretical framework, comparison with prior work, limitations
+2. [Figure 3] — Missing data file for temperature comparison plot
+3. [References] — 2 DOIs mentioned in text not in .bib: 10.1021/xxx, 10.1038/yyy
+
+### 🟢 Low priority (defaults applied)
+1. [ORCID] — Using placeholder; add yours later
+2. [Journal] — Applying ES&T template as requested
+
+**Action needed:** Resolve 🔴 items. 🟡 items will be marked `<!-- TODO -->` and you can fill them later.
+```
+
 - **Three-color severity:**
 
 | Severity | Examples | Agent Behavior |
